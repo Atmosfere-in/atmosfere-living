@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
-import { Jost, Marcellus } from "next/font/google";
+import localFont from "next/font/local";
 import { CartProvider } from "@/components/cart/CartProvider";
 import "./globals.css";
 
-const serif = Marcellus({ variable: "--font-marcellus", subsets: ["latin"], weight: "400" });
-const sans = Jost({ variable: "--font-jost", subsets: ["latin"], weight: ["300", "400", "500"] });
+// Self-hosted (OFL) so builds never depend on fetching Google Fonts.
+const serif = localFont({
+  src: "./fonts/Marcellus-Regular-latin.woff2",
+  variable: "--font-marcellus",
+  weight: "400",
+  display: "swap",
+});
+const sans = localFont({
+  src: "./fonts/Jost-Variable-latin.woff2",
+  variable: "--font-jost",
+  weight: "300 500",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://atmosfere-living.in"),
