@@ -8,42 +8,60 @@ const PRODUCT_SELECT = "*, category:categories(name, slug)";
 
 export type SortKey = "new" | "price-asc" | "price-desc" | "name";
 
+type ProductQuery = { category?: string; q?: string; sort?: SortKey; featured?: boolean; limit?: number };
+
+/**
+ * When the database can't be reached (keys missing, project paused, network down) the
+ * storefront falls back to the demo catalogue so pages still render. Checkout still needs
+ * the real database, so orders can't be placed against demo products.
+ */
+function dbDown(error: unknown, where: string) {
+  console.error(`[data] Supabase unavailable in ${where}; showing demo catalogue.`, error);
+}
+
+function demoQuery(opts: ProductQuery): Product[] {
+  let list = [...demoProducts];
+  if (opts.category) list = list.filter((p) => p.category?.slug === opts.category);
+  if (opts.featured) list = list.filter((p) => p.is_featured);
+  if (opts.q) {
+    const q = opts.q.toLowerCase();
+    list = list.filter((p) => p.name.toLowerCase().includes(q) || p.short_description?.toLowerCase().includes(q));
+  }
+  list.sort(sorter(opts.sort));
+  return opts.limit ? list.slice(0, opts.limit) : list;
+}
+
 export async function getCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) return demoCategories;
   const supabase = await createClient();
-  const { data } = await supabase.from("categories").select("*").order("sort_order");
+  const { data, error } = await supabase.from("categories").select("*").order("sort_order");
+  if (error) {
+    dbDown(error, "getCategories");
+    return demoCategories;
+  }
   return data ?? [];
 }
 
-export async function getProducts(opts: {
-  category?: string;
-  q?: string;
-  sort?: SortKey;
-  featured?: boolean;
-  limit?: number;
-} = {}): Promise<Product[]> {
-  if (!isSupabaseConfigured()) {
-    let list = [...demoProducts];
-    if (opts.category) list = list.filter((p) => p.category?.slug === opts.category);
-    if (opts.featured) list = list.filter((p) => p.is_featured);
-    if (opts.q) {
-      const q = opts.q.toLowerCase();
-      list = list.filter((p) => p.name.toLowerCase().includes(q) || p.short_description?.toLowerCase().includes(q));
-    }
-    list.sort(sorter(opts.sort));
-    return opts.limit ? list.slice(0, opts.limit) : list;
-  }
+export async function getProducts(opts: ProductQuery = {}): Promise<Product[]> {
+  if (!isSupabaseConfigured()) return demoQuery(opts);
 
   const supabase = await createClient();
   let query = supabase.from("products").select(PRODUCT_SELECT).eq("is_active", true);
 
   if (opts.category) {
-    const { data: cat } = await supabase.from("categories").select("id").eq("slug", opts.category).maybeSingle();
+    const { data: cat, error } = await supabase.from("categories").select("id").eq("slug", opts.category).maybeSingle();
+    if (error) {
+      dbDown(error, "getProducts/category");
+      return demoQuery(opts);
+    }
     if (!cat) return [];
     query = query.eq("category_id", cat.id);
   }
   if (opts.featured) query = query.eq("is_featured", true);
-  if (opts.q) query = query.or(`name.ilike.%${opts.q.replace(/[%,()]/g, "")}%,short_description.ilike.%${opts.q.replace(/[%,()]/g, "")}%`);
+  if (opts.q) {
+    const q = opts.q.replace(/[%,()]/g, "");
+    query = query.or(`name.ilike.%${q}%,short_description.ilike.%${q}%`);
+  }
 
   switch (opts.sort) {
     case "price-asc":
@@ -60,14 +78,22 @@ export async function getProducts(opts: {
   }
   if (opts.limit) query = query.limit(opts.limit);
 
-  const { data } = await query;
+  const { data, error } = await query;
+  if (error) {
+    dbDown(error, "getProducts");
+    return demoQuery(opts);
+  }
   return (data as Product[]) ?? [];
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!isSupabaseConfigured()) return demoProducts.find((p) => p.slug === slug) ?? null;
   const supabase = await createClient();
-  const { data } = await supabase.from("products").select(PRODUCT_SELECT).eq("slug", slug).maybeSingle();
+  const { data, error } = await supabase.from("products").select(PRODUCT_SELECT).eq("slug", slug).maybeSingle();
+  if (error) {
+    dbDown(error, "getProductBySlug");
+    return demoProducts.find((p) => p.slug === slug) ?? null;
+  }
   return (data as Product) ?? null;
 }
 
@@ -80,19 +106,21 @@ export async function getRelated(product: Product, limit = 4): Promise<Product[]
 export async function getApprovedReviews(productId: string): Promise<Review[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("reviews")
     .select("*")
     .eq("product_id", productId)
     .eq("status", "approved")
     .order("created_at", { ascending: false });
+  if (error) return [];
   return data ?? [];
 }
 
 export async function getRatings(): Promise<Record<string, { avg: number; count: number }>> {
   if (!isSupabaseConfigured()) return {};
   const supabase = await createClient();
-  const { data } = await supabase.from("product_ratings").select("*");
+  const { data, error } = await supabase.from("product_ratings").select("*");
+  if (error) return {};
   return Object.fromEntries((data ?? []).map((r) => [r.product_id, { avg: Number(r.avg_rating), count: r.review_count }]));
 }
 
