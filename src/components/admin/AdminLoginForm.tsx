@@ -46,7 +46,7 @@ export function AdminLoginForm({ next, signedIn }: { next: string; signedIn: boo
     setError(null);
     if (!email) return setError("Enter your admin email first, then click “Forgot password?”.");
     const { error } = await createClient().auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent("/account/password?reset=1")}`,
+      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent("/admin/password?reset=1")}`,
     });
     if (error) return setError(error.message);
     setNotice(`If ${email} is an account, a password reset link is on its way.`);

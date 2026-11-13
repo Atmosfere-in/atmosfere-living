@@ -1,8 +1,11 @@
+import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { AccountNav } from "@/components/account/AccountNav";
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const { user, profile } = await requireUser("/account");
+  // Admin accounts manage the store; they don't get a customer account area.
+  if (profile?.role === "admin" && !profile.is_blocked) redirect("/admin");
   const name = profile?.full_name ?? user.email?.split("@")[0] ?? "there";
 
   return (

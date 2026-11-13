@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BadgePercent, ExternalLink, FolderTree, LayoutDashboard, LogOut, Menu, Package, ShoppingCart, Star, Users, X } from "lucide-react";
+import { BadgePercent, ExternalLink, FolderTree, KeyRound, LayoutDashboard, LogOut, Menu, Package, ShoppingCart, Star, Users, X } from "lucide-react";
 import { BrandLockup } from "@/components/Logo";
 import { signOutAdmin } from "@/lib/actions/store";
 import { cx } from "@/lib/utils";
@@ -16,6 +16,7 @@ const NAV = [
   { href: "/admin/users", label: "Customers", icon: Users },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
   { href: "/admin/discounts", label: "Discounts & offers", icon: BadgePercent },
+  { href: "/admin/password", label: "Password", icon: KeyRound },
 ];
 
 export function AdminNav({ name }: { name: string }) {
