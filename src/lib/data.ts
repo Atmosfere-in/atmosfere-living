@@ -20,7 +20,7 @@ type ProductQuery = { category?: string; q?: string; sort?: SortKey; featured?: 
  * so backend work (auth, orders, admin) can continue while real products are being prepared.
  * Set it to "database" (or remove it) to show products from Supabase.
  */
-const useDemoCatalog = () => !isSupabaseConfigured() || process.env.CATALOG_SOURCE === "demo";
+const isDemoCatalog = () => !isSupabaseConfigured() || process.env.CATALOG_SOURCE === "demo";
 
 function dbDown(error: unknown, where: string) {
   console.error(`[data] Supabase unavailable in ${where}; showing demo catalogue.`, error);
@@ -39,7 +39,7 @@ function demoQuery(opts: ProductQuery): Product[] {
 }
 
 export async function getCategories(): Promise<Category[]> {
-  if (useDemoCatalog()) return demoCategories;
+  if (isDemoCatalog()) return demoCategories;
   const supabase = await createClient();
   const { data, error } = await supabase.from("categories").select("*").order("sort_order");
   if (error) {
@@ -50,7 +50,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getProducts(opts: ProductQuery = {}): Promise<Product[]> {
-  if (useDemoCatalog()) return demoQuery(opts);
+  if (isDemoCatalog()) return demoQuery(opts);
 
   const supabase = await createClient();
   let query = supabase.from("products").select(PRODUCT_SELECT).eq("is_active", true);
@@ -94,7 +94,7 @@ export async function getProducts(opts: ProductQuery = {}): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  if (useDemoCatalog()) return demoProducts.find((p) => p.slug === slug) ?? null;
+  if (isDemoCatalog()) return demoProducts.find((p) => p.slug === slug) ?? null;
   const supabase = await createClient();
   const { data, error } = await supabase.from("products").select(PRODUCT_SELECT).eq("slug", slug).maybeSingle();
   if (error) {
@@ -111,7 +111,7 @@ export async function getRelated(product: Product, limit = 4): Promise<Product[]
 }
 
 export async function getApprovedReviews(productId: string): Promise<Review[]> {
-  if (useDemoCatalog()) return [];
+  if (isDemoCatalog()) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("reviews")
@@ -124,7 +124,7 @@ export async function getApprovedReviews(productId: string): Promise<Review[]> {
 }
 
 export async function getRatings(): Promise<Record<string, { avg: number; count: number }>> {
-  if (useDemoCatalog()) return {};
+  if (isDemoCatalog()) return {};
   const supabase = await createClient();
   const { data, error } = await supabase.from("product_ratings").select("*");
   if (error) return {};
