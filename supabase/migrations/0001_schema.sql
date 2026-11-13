@@ -57,6 +57,16 @@ as $$
   );
 $$;
 
+-- True for requests from website users (anon or signed-in); false for the SQL editor,
+-- migrations and the service role, which are trusted to manage roles directly.
+create or replace function public.is_end_user()
+returns boolean
+language sql
+stable
+as $$
+  select coalesce(auth.role(), '') in ('anon', 'authenticated');
+$$;
+
 -- Create a profile row on sign-up (Google or email)
 create or replace function public.handle_new_user()
 returns trigger
@@ -90,7 +100,7 @@ security definer
 set search_path = public
 as $$
 begin
-  if not public.is_admin() then
+  if public.is_end_user() and not public.is_admin() then
     new.role := old.role;
     new.is_blocked := old.is_blocked;
     new.email := old.email;
@@ -251,7 +261,7 @@ security definer
 set search_path = public
 as $$
 begin
-  if not public.is_admin() then
+  if public.is_end_user() and not public.is_admin() then
     if tg_op = 'INSERT' then
       new.status := 'pending';
       new.user_id := auth.uid();
