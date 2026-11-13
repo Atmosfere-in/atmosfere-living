@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BadgePercent, ExternalLink, FolderTree, LayoutDashboard, LogOut, Menu, Package, ShoppingCart, Star, Users, X } from "lucide-react";
 import { BrandLockup } from "@/components/Logo";
-import { signOut } from "@/lib/actions/store";
+import { signOutAdmin } from "@/lib/actions/store";
 import { cx } from "@/lib/utils";
 
 const NAV = [
@@ -63,7 +63,7 @@ export function AdminNav({ name }: { name: string }) {
           <Link href="/" className="flex items-center gap-3 rounded-md px-4 py-2.5 text-sm text-ivory/60 hover:text-ivory">
             <ExternalLink size={16} strokeWidth={1.5} /> View store
           </Link>
-          <form action={signOut}>
+          <form action={signOutAdmin}>
             <button className="flex w-full items-center gap-3 rounded-md px-4 py-2.5 text-sm text-ivory/60 hover:text-ivory cursor-pointer">
               <LogOut size={16} strokeWidth={1.5} /> Sign out
             </button>

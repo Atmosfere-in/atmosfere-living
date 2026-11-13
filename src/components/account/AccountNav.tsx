@@ -14,7 +14,7 @@ const LINKS = [
   ["/account/password", "Password"],
 ];
 
-export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
+export function AccountNav() {
   const path = usePathname();
   return (
     <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:gap-0 lg:border-t lg:border-stone-200">
@@ -33,14 +33,6 @@ export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
           </Link>
         );
       })}
-      {isAdmin && (
-        <Link
-          href="/admin"
-          className="shrink-0 rounded-full border border-accent px-4 py-2 text-[0.7rem] tracking-[0.18em] uppercase text-accent lg:rounded-none lg:border-0 lg:border-b lg:border-stone-200 lg:px-0 lg:py-4"
-        >
-          Admin dashboard →
-        </Link>
-      )}
       <form action={signOut}>
         <button className="shrink-0 cursor-pointer rounded-full border border-stone-200 px-4 py-2 text-[0.7rem] tracking-[0.18em] uppercase text-stone-600 hover:text-ink lg:rounded-none lg:border-0 lg:px-0 lg:py-4">
           Sign out

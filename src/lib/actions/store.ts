@@ -184,3 +184,12 @@ export async function signOut() {
   revalidatePath("/", "layout");
   redirect("/");
 }
+
+export async function signOutAdmin() {
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+  }
+  revalidatePath("/", "layout");
+  redirect("/admin/login");
+}

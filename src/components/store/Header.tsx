@@ -74,7 +74,7 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
               {search ? <X size={18} strokeWidth={1.4} /> : <Search size={18} strokeWidth={1.4} />}
             </IconBtn>
             <Link
-              href={user ? (user.isAdmin ? "/admin" : "/account") : "/login"}
+              href={user ? "/account" : "/login"}
               aria-label={user ? "Your account" : "Sign in"}
               className="grid h-10 w-10 place-items-center rounded-full hover:bg-current/5"
             >

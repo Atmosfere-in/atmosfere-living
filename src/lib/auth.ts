@@ -21,8 +21,10 @@ export async function requireUser(next = "/account") {
   return session as { user: NonNullable<typeof session.user>; profile: Profile | null };
 }
 
-export async function requireAdmin() {
-  const session = await requireUser("/admin");
-  if (session.profile?.role !== "admin" || session.profile.is_blocked) redirect("/account?denied=1");
+/** Admin pages use their own sign-in at /admin/login, separate from the customer /login. */
+export async function requireAdmin(next = "/admin") {
+  const session = await getSession();
+  if (!session.user) redirect(`/admin/login?next=${encodeURIComponent(next)}`);
+  if (session.profile?.role !== "admin" || session.profile.is_blocked) redirect("/admin/login?error=not_admin");
   return session as { user: NonNullable<typeof session.user>; profile: Profile };
 }
