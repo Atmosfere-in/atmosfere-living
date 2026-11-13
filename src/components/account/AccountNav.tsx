@@ -11,6 +11,7 @@ const LINKS = [
   ["/account/wishlist", "Wishlist"],
   ["/account/addresses", "Addresses"],
   ["/account/profile", "Profile"],
+  ["/account/password", "Password"],
 ];
 
 export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
