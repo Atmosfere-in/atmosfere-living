@@ -57,14 +57,14 @@ as $$
   );
 $$;
 
--- True for requests from website users (anon or signed-in); false for the SQL editor,
--- migrations and the service role, which are trusted to manage roles directly.
+-- True for requests from website users: the Data API connects as `authenticator` and switches
+-- to anon/authenticated. False for the SQL editor and migrations, which may manage roles.
 create or replace function public.is_end_user()
 returns boolean
 language sql
 stable
 as $$
-  select coalesce(auth.role(), '') in ('anon', 'authenticated');
+  select session_user = 'authenticator' and coalesce(auth.role(), 'anon') <> 'service_role';
 $$;
 
 -- Create a profile row on sign-up (Google or email)
