@@ -60,7 +60,7 @@ export default async function Home() {
           {categories.map((c, i) => (
             <Link key={c.id} href={`/shop?category=${c.slug}`} className={`group block img-zoom ${i === 0 ? "col-span-2 md:col-span-1" : ""}`}>
               <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-stone-100">
-                {c.image_url && <Image src={img(c.image_url, 900)} alt={c.name} fill sizes="(min-width:768px) 20vw, 50vw" className="object-cover" />}
+                {c.image_url && <Image src={img(c.image_url, 900)} alt={c.name} fill sizes={i === 0 ? "(min-width:768px) 20vw, 100vw" : "(min-width:768px) 20vw, 50vw"} className="object-cover" />}
               </div>
               <h3 className="display mt-4 text-2xl">{c.name}</h3>
               {c.description && <p className="mt-1 text-xs text-stone-600 font-light">{c.description}</p>}
