@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { POLICIES_UPDATED } from "@/lib/site";
+import { HAS_CONTACT, POLICIES_UPDATED } from "@/lib/site";
 import { fmtDate } from "@/lib/utils";
 
 export const POLICY_LINKS: [string, string][] = [
@@ -7,10 +7,11 @@ export const POLICY_LINKS: [string, string][] = [
   ["/policies/returns", "Returns & refunds"],
   ["/policies/terms", "Terms of use"],
   ["/policies/privacy", "Privacy policy"],
-  ["/contact", "Contact us"],
+  ...(HAS_CONTACT ? ([["/contact", "Contact us"]] as [string, string][]) : []),
 ];
 
-export type PolicySection = { heading: string; body: React.ReactNode };
+/** `needsContact` sections are hidden until contact details are filled in. */
+export type PolicySection = { heading: string; body: React.ReactNode; needsContact?: boolean };
 
 export function PolicyPage({ title, intro, sections, path }: { title: string; intro: string; sections: PolicySection[]; path: string }) {
   return (
@@ -31,7 +32,7 @@ export function PolicyPage({ title, intro, sections, path }: { title: string; in
         <h1 className="display mt-4 text-[clamp(2.25rem,4vw,3.5rem)]">{title}</h1>
         <p className="mt-6 text-stone-600 font-light leading-relaxed">{intro}</p>
         <div className="mt-12 space-y-10">
-          {sections.map((s) => (
+          {sections.filter((s) => !s.needsContact || HAS_CONTACT).map((s) => (
             <section key={s.heading}>
               <h2 className="font-display text-2xl">{s.heading}</h2>
               <div className="mt-3 space-y-3 text-stone-600 font-light leading-relaxed [&_li]:ml-5 [&_li]:list-disc [&_a]:underline">{s.body}</div>

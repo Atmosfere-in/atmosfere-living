@@ -13,5 +13,8 @@ export const BUSINESS = {
   jurisdiction: "India",
 };
 
+/** The Contact page and "contact us" lines only appear once an email or phone is filled in. */
+export const HAS_CONTACT = !!(BUSINESS.email || BUSINESS.phone);
+
 /** Date shown as "Last updated" on the policy pages. */
 export const POLICIES_UPDATED = "2026-11-16";

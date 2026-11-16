@@ -27,7 +27,7 @@ export const img = (url: string | null | undefined, w = 1200) => {
 };
 
 /** Shown on products without their own delivery time. */
-export const DEFAULT_DELIVERY = "Dispatched in 7–10 working days.";
+export const DEFAULT_DELIVERY = "Dispatched in 5–7 working days.";
 
 export const FREE_SHIPPING_THRESHOLD = 5000;
 export const FLAT_SHIPPING = 250;

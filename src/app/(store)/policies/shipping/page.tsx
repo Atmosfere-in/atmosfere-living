@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ContactLine, PolicyPage } from "@/components/store/PolicyPage";
-import { DEFAULT_DELIVERY, FLAT_SHIPPING, FREE_SHIPPING_THRESHOLD, inr } from "@/lib/utils";
+import { FLAT_SHIPPING, FREE_SHIPPING_THRESHOLD, inr } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Shipping & delivery" };
 
@@ -18,11 +18,10 @@ export default function ShippingPolicy() {
         {
           heading: "Delivery times",
           body: (
-            <ul>
-              <li>Made-to-order furniture is crafted after you order and is usually dispatched in 3–4 weeks.</li>
-              <li>Ready pieces: {DEFAULT_DELIVERY.toLowerCase()}</li>
-              <li>After dispatch, delivery normally takes another 3–7 working days depending on your city.</li>
-            </ul>
+            <p>
+              Orders are usually dispatched in 5–7 working days and reach you 3–5 working days after dispatch, depending on your city. Each product page shows
+              its delivery time.
+            </p>
           ),
         },
         {
@@ -49,6 +48,7 @@ export default function ShippingPolicy() {
         },
         {
           heading: "Questions",
+          needsContact: true,
           body: (
             <p>
               <ContactLine />

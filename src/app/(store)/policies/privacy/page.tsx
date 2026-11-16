@@ -60,6 +60,7 @@ export default function Privacy() {
         },
         {
           heading: "Contact",
+          needsContact: true,
           body: (
             <p>
               <ContactLine />

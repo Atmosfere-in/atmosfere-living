@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PolicyPage } from "@/components/store/PolicyPage";
-import { BUSINESS } from "@/lib/site";
+import { BUSINESS, HAS_CONTACT } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Contact us" };
 
 export default function Contact() {
+  if (!HAS_CONTACT) notFound();
   const details = [
     ["Email", BUSINESS.email && <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>],
     ["Phone", BUSINESS.phone && <a href={`tel:${BUSINESS.phone.replace(/\s/g, "")}`}>{BUSINESS.phone}</a>],
@@ -24,7 +26,6 @@ export default function Contact() {
           heading: "Get in touch",
           body: (
             <>
-              {!BUSINESS.email && !BUSINESS.phone && <p>Our support email and phone number will be listed here shortly.</p>}
               <dl className="space-y-2">
                 {details.map(([k, v]) => (
                   <div key={k} className="flex gap-4">

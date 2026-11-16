@@ -47,6 +47,7 @@ export default function ReturnsPolicy() {
         },
         {
           heading: "Questions",
+          needsContact: true,
           body: (
             <p>
               <ContactLine />

@@ -57,6 +57,7 @@ export default function Terms() {
         },
         {
           heading: "Contact",
+          needsContact: true,
           body: (
             <p>
               <ContactLine />
