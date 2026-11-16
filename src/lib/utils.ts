@@ -16,12 +16,16 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-/** Unsplash URLs get sized params; anything else is returned untouched. */
+/**
+ * Source URL for next/image. Unsplash originals are requested large and at high quality,
+ * so next/image can make sharp versions for every screen (including retina). Other URLs are untouched.
+ */
 export const img = (url: string | null | undefined, w = 1200) => {
   if (!url) return "/placeholder.svg";
   if (url.includes("images.unsplash.com")) {
     const base = url.split("?")[0];
-    return `${base}?w=${w}&q=80&auto=format&fit=crop`;
+    const source = Math.min(3200, Math.max(1600, w * 2));
+    return `${base}?w=${source}&q=90&fit=crop`;
   }
   return url;
 };
