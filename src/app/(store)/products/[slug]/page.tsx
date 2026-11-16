@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </nav>
       </div>
 
-      <section className="container-lux grid gap-10 pb-24 pt-8 lg:grid-cols-12 lg:gap-16">
+      <section className="container-lux grid grid-cols-1 gap-10 pb-24 pt-8 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <Gallery images={product.images} name={product.name} />
         </div>

@@ -77,9 +77,9 @@ export function AddToCart({
               Price for your selection: <span className="font-display text-lg text-ink">{inr(price)}</span>
             </p>
           )}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {!soldOut && <Qty value={qty} max={product.stock} onChange={(n) => setQty(Math.max(1, n))} />}
-            <button disabled={soldOut} onClick={() => add({ ...product, price, options: chosen }, qty)} className="btn btn-dark flex-1">
+            <button disabled={soldOut} onClick={() => add({ ...product, price, options: chosen }, qty)} className="btn btn-dark min-w-[9rem] flex-1">
               {soldOut ? "Sold out" : "Add to bag"}
             </button>
             <button
