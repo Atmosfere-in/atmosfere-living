@@ -26,6 +26,8 @@ export const metadata: Metadata = {
   description:
     "Curated furniture, lighting and decor from Atmosfere — styled corner by corner. Shop pieces chosen by the designers behind Atmosfere Spaces.",
   openGraph: { siteName: "Atmosfere Living", type: "website", locale: "en_IN" },
+  // Google Search Console "HTML tag" verification code, set in Vercel when available.
+  verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
