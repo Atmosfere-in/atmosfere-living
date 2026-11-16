@@ -19,8 +19,7 @@ export default function ShippingPolicy() {
           heading: "Delivery times",
           body: (
             <p>
-              Orders are usually dispatched in 5–7 working days and reach you 3–5 working days after dispatch, depending on your city. Each product page shows
-              its delivery time.
+              Orders are usually delivered in 5–7 working days, depending on your city. Each product page shows its delivery time.
             </p>
           ),
         },
