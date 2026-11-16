@@ -10,6 +10,7 @@ import { cx } from "@/lib/utils";
 
 const NAV = [
   { href: "/shop", label: "Shop all" },
+  { href: "/vibes", label: "Shop by Vibe" },
   { href: "/shop?category=furniture", label: "Furniture" },
   { href: "/shop?category=lighting", label: "Lighting" },
   { href: "/shop?category=decor", label: "Decor" },

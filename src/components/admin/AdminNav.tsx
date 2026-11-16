@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BadgePercent, ExternalLink, FolderTree, KeyRound, LayoutDashboard, LogOut, Menu, Package, ShoppingCart, Star, Users, X } from "lucide-react";
+import { BadgePercent, ExternalLink, FolderTree, KeyRound, LayoutDashboard, LogOut, Menu, Package, ShoppingCart, Sofa, Star, Users, X } from "lucide-react";
 import { BrandLockup } from "@/components/Logo";
 import { signOutAdmin } from "@/lib/actions/store";
 import { cx } from "@/lib/utils";
@@ -13,6 +13,7 @@ const NAV = [
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/categories", label: "Categories", icon: FolderTree },
+  { href: "/admin/vibes", label: "Shop by Vibe", icon: Sofa },
   { href: "/admin/users", label: "Customers", icon: Users },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
   { href: "/admin/discounts", label: "Discounts & offers", icon: BadgePercent },

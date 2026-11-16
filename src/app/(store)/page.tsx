@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { getCategories, getProducts, getRatings } from "@/lib/data";
+import { getCategories, getCorners, getProducts, getRatings } from "@/lib/data";
+import { VibeTiles } from "@/components/vibes/VibeTiles";
 import { ProductCard } from "@/components/store/ProductCard";
 import { img } from "@/lib/utils";
 
@@ -11,10 +12,11 @@ const EDIT = "https://images.unsplash.com/photo-1618220179428-22790b461013";
 const SPACES = "https://images.unsplash.com/photo-1564078516393-cf04bd966897";
 
 export default async function Home() {
-  const [categories, featured, ratings] = await Promise.all([
+  const [categories, featured, ratings, corners] = await Promise.all([
     getCategories(),
     getProducts({ featured: true, limit: 8 }),
     getRatings(),
+    getCorners(),
   ]);
 
   return (
@@ -44,6 +46,29 @@ export default async function Home() {
           <Image src={img(HERO, 2000)} alt="A softly lit living corner with a lounge chair and arc lamp" fill priority sizes="(min-width:768px) 58vw, 100vw" className="object-cover" />
         </div>
       </section>
+
+      {/* Shop by Vibe */}
+      {corners.length > 0 && (
+        <section className="border-y border-stone-200 bg-stone-100/60">
+          <div className="container-lux py-24 md:py-32">
+            <div className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className="eyebrow">Shop by Vibe</p>
+                <h2 className="display mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)]">One piece, styled your way.</h2>
+                <p className="mt-4 max-w-lg text-stone-600 font-light">
+                  Corners designed by our studio. Shop the complete look, or just the pieces you love.
+                </p>
+              </div>
+              <Link href="/vibes" className="link-underline">
+                All vibes <ArrowRight size={14} />
+              </Link>
+            </div>
+            <div className="mt-14">
+              <VibeTiles corners={corners} />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Categories */}
       <section className="container-lux py-24 md:py-32">

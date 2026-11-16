@@ -36,7 +36,12 @@ function parseOptions(fd: FormData): ProductOption[] {
       .map((o) => ({
         name: String(o.name ?? "").trim(),
         values: (o.values ?? [])
-          .map((v) => ({ label: String(v.label ?? "").trim(), price: Math.max(0, Number(v.price) || 0) }))
+          .map((v) => ({
+            label: String(v.label ?? "").trim(),
+            price: Math.max(0, Number(v.price) || 0),
+            ...(/^#[0-9a-f]{6}$/i.test(String(v.swatch ?? "")) ? { swatch: String(v.swatch) } : {}),
+            ...(String(v.image ?? "").startsWith("http") || String(v.image ?? "").startsWith("/") ? { image: String(v.image) } : {}),
+          }))
           .filter((v) => v.label),
       }))
       .filter((o) => o.name && o.values.length);
@@ -219,5 +224,84 @@ export async function deleteDiscount(id: string): Promise<ActionResult> {
   const { error } = await supabase.from("discount_codes").delete().eq("id", id);
   if (error) return { ok: false, error: error.message };
   revalidatePath("/admin/discounts");
+  return { ok: true };
+}
+
+// ------------------------------------------------------------ Shop by Vibe
+export type CornerInput = {
+  id?: string;
+  name: string;
+  slug?: string;
+  tagline?: string;
+  story?: string;
+  image: string;
+  sort_order?: number;
+  is_active: boolean;
+  items: { product_id: string; x: number; y: number; default_options: Record<string, string> }[];
+};
+
+const clampPct = (n: number) => Math.round(Math.min(100, Math.max(0, Number(n) || 0)) * 100) / 100;
+
+/** Creates or updates a corner and replaces its dots. */
+export async function saveCorner(input: CornerInput): Promise<ActionResult<{ id: string }>> {
+  const { supabase } = await admin();
+  const name = input.name?.trim();
+  const image = input.image?.trim();
+  if (!name || !image) return { ok: false, error: "A name and an image are required." };
+
+  const row = {
+    name,
+    slug: slugify(input.slug?.trim() || name),
+    tagline: input.tagline?.trim() || null,
+    story: input.story?.trim() || null,
+    image,
+    sort_order: Math.round(Number(input.sort_order) || 0),
+    is_active: !!input.is_active,
+  };
+  const { data, error } = input.id
+    ? await supabase.from("vibe_corners").update(row).eq("id", input.id).select("id").single()
+    : await supabase.from("vibe_corners").insert(row).select("id").single();
+  if (error || !data) return { ok: false, error: error?.code === "23505" ? "That URL slug is already in use." : (error?.message ?? "Could not save.") };
+
+  const { error: delError } = await supabase.from("vibe_corner_items").delete().eq("corner_id", data.id);
+  if (delError) return { ok: false, error: delError.message };
+  const items = (input.items ?? [])
+    .filter((it) => it.product_id)
+    .map((it, i) => ({
+      corner_id: data.id,
+      product_id: it.product_id,
+      x: clampPct(it.x),
+      y: clampPct(it.y),
+      default_options: it.default_options ?? {},
+      sort_order: i + 1,
+    }));
+  if (items.length) {
+    const { error: insError } = await supabase.from("vibe_corner_items").insert(items);
+    if (insError) return { ok: false, error: insError.message };
+  }
+
+  revalidatePath("/admin/vibes");
+  revalidatePath("/vibes", "layout");
+  revalidatePath("/");
+  return { ok: true, data: { id: data.id } };
+}
+
+export async function toggleCorner(id: string, is_active: boolean): Promise<ActionResult> {
+  const { supabase } = await admin();
+  const { error } = await supabase.from("vibe_corners").update({ is_active }).eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin/vibes");
+  revalidatePath("/vibes", "layout");
+  revalidatePath("/");
+  return { ok: true };
+}
+
+export async function deleteCorner(id: string): Promise<ActionResult> {
+  const { supabase } = await admin();
+  const { error } = await supabase.from("vibe_corners").delete().eq("id", id);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath("/admin/vibes");
+  revalidatePath("/vibes", "layout");
+  revalidatePath("/");
   return { ok: true };
 }

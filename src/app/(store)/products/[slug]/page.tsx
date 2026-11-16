@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getApprovedReviews, getProductBySlug, getRelated } from "@/lib/data";
+import { getApprovedReviews, getCornersForProduct, getProductBySlug, getRelated } from "@/lib/data";
+import { VibeTiles } from "@/components/vibes/VibeTiles";
 import { getSession } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { ProductCard } from "@/components/store/ProductCard";
@@ -27,7 +28,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   if (!product || !product.is_active) notFound();
 
-  const [reviews, related, { user }] = await Promise.all([getApprovedReviews(product.id), getRelated(product), getSession()]);
+  const [reviews, related, corners, { user }] = await Promise.all([
+    getApprovedReviews(product.id),
+    getRelated(product),
+    getCornersForProduct(product.id),
+    getSession(),
+  ]);
 
   let saved = false;
   if (user) {
@@ -123,6 +129,19 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </dl>
         </div>
       </section>
+
+      {corners.length > 0 && (
+        <section className="border-t border-stone-200 bg-stone-100/60">
+          <div className="container-lux py-24">
+            <p className="eyebrow">See it styled</p>
+            <h2 className="display mt-4 text-[clamp(2rem,3.5vw,3rem)]">{product.name}, in every mood.</h2>
+            <p className="mt-3 max-w-lg text-stone-600 font-light">Explore corners designed around this piece, and shop the complete look.</p>
+            <div className="mt-12">
+              <VibeTiles corners={corners} size="sm" />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Reviews */}
       <section id="reviews" className="border-t border-stone-200 bg-stone-100/50">

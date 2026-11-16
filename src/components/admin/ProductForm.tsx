@@ -6,7 +6,7 @@ import { useRef, useState, useTransition } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, X } from "lucide-react";
 import { saveProduct } from "@/lib/actions/admin";
 import { OptionsEditor } from "./OptionsEditor";
-import { createClient } from "@/lib/supabase/client";
+import { uploadImages } from "@/lib/upload";
 import { DEFAULT_DELIVERY, img, slugify } from "@/lib/utils";
 import type { Category, Product } from "@/lib/types";
 
@@ -25,23 +25,9 @@ export function ProductForm({ product, categories }: { product?: Product; catego
     if (!files?.length) return;
     setUploading(true);
     setError(null);
-    const supabase = createClient();
-    const uploaded: string[] = [];
-    for (const file of Array.from(files)) {
-      if (file.size > 8 * 1024 * 1024) {
-        setError(`${file.name} is larger than 8 MB.`);
-        continue;
-      }
-      const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-      const path = `${slugify(name || "product")}/${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("product-images").upload(path, file, { cacheControl: "31536000", upsert: false });
-      if (error) {
-        setError(error.message);
-        continue;
-      }
-      uploaded.push(supabase.storage.from("product-images").getPublicUrl(path).data.publicUrl);
-    }
-    setImages((i) => [...i, ...uploaded]);
+    const { urls, error } = await uploadImages(files, name || "product");
+    if (error) setError(error);
+    setImages((i) => [...i, ...urls]);
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
   };

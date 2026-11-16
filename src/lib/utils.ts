@@ -61,3 +61,12 @@ export const cartLineId = (productId: string, chosen: Record<string, string> | n
   const keys = Object.keys(chosen ?? {}).sort();
   return keys.length ? `${productId}|${keys.map((k) => `${k}=${chosen![k]}`).join("|")}` : productId;
 };
+
+/** Starting choices: the given defaults where still offered, otherwise each variation's first value. */
+export const initialChoices = (options: OptionLike[] | null | undefined, defaults?: Record<string, string> | null): Record<string, string> =>
+  Object.fromEntries(
+    usableOptions(options).map((o) => {
+      const d = defaults?.[o.name];
+      return [o.name, d && o.values.some((v) => v.label === d) ? d : o.values[0].label];
+    }),
+  );

@@ -27,6 +27,10 @@ export interface Category {
 export interface ProductOptionValue {
   label: string;
   price: number;
+  /** Optional colour (e.g. "#5E3B24") shown as a round swatch. */
+  swatch?: string;
+  /** Optional texture photo shown as a round swatch (wins over `swatch`). */
+  image?: string;
 }
 export interface ProductOption {
   name: string;
@@ -138,4 +142,30 @@ export interface DiscountCode {
   expires_at: string | null;
   is_active: boolean;
   created_at: string;
+}
+
+/** A styled "Shop by Vibe" corner. */
+export interface VibeCorner {
+  id: string;
+  name: string;
+  slug: string;
+  tagline: string | null;
+  story: string | null;
+  image: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  items?: VibeCornerItem[];
+}
+
+/** A product placed in a corner; x / y are the dot's position on the image in %. */
+export interface VibeCornerItem {
+  id: string;
+  corner_id: string;
+  product_id: string;
+  x: number;
+  y: number;
+  default_options: ChosenOptions;
+  sort_order: number;
+  product?: Product | null;
 }

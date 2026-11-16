@@ -24,6 +24,7 @@ export function Footer() {
         <FooterCol
           title="Shop"
           links={[
+            ["/vibes", "Shop by Vibe"],
             ["/shop?category=furniture", "Furniture"],
             ["/shop?category=lighting", "Lighting"],
             ["/shop?category=decor", "Decor"],

@@ -6,7 +6,8 @@ import { Heart } from "lucide-react";
 import { useCart, type CartItem } from "@/components/cart/CartProvider";
 import { Qty } from "@/components/cart/CartDrawer";
 import { toggleWishlist } from "@/lib/actions/store";
-import { cx, inr, priceWithOptions, usableOptions } from "@/lib/utils";
+import { inr, initialChoices, priceWithOptions, usableOptions } from "@/lib/utils";
+import { OptionPicker } from "./OptionPicker";
 import type { ProductOption } from "@/lib/types";
 
 export function AddToCart({
@@ -25,7 +26,7 @@ export function AddToCart({
   const { add } = useCart();
   const router = useRouter();
   const choices = usableOptions(options);
-  const [chosen, setChosen] = useState<Record<string, string>>(() => Object.fromEntries(choices.map((o) => [o.name, o.values[0].label])));
+  const [chosen, setChosen] = useState<Record<string, string>>(() => initialChoices(choices));
   const [qty, setQty] = useState(1);
   const [saved, setSaved] = useState(initialSaved);
   const [pending, start] = useTransition();
@@ -35,33 +36,7 @@ export function AddToCart({
 
   return (
     <div className="space-y-8">
-      {choices.map((o) => (
-        <fieldset key={o.name}>
-          <legend className="text-[0.7rem] font-medium tracking-[0.2em] uppercase">
-            {o.name}: <span className="font-normal normal-case tracking-normal text-stone-600">{chosen[o.name]}</span>
-          </legend>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {o.values.map((v) => {
-              const active = chosen[o.name] === v.label;
-              return (
-                <button
-                  key={v.label}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setChosen((c) => ({ ...c, [o.name]: v.label }))}
-                  className={cx(
-                    "min-h-10 rounded-full border px-4 text-sm transition-colors cursor-pointer",
-                    active ? "border-ink bg-ink text-ivory" : "border-stone-200 hover:border-ink",
-                  )}
-                >
-                  {v.label}
-                  {!comingSoon && Number(v.price) > 0 && <span className={cx("ml-1 text-xs", active ? "text-ivory/70" : "text-stone-400")}>+{inr(v.price)}</span>}
-                </button>
-              );
-            })}
-          </div>
-        </fieldset>
-      ))}
+      <OptionPicker options={choices} chosen={chosen} onChange={(name, value) => setChosen((c) => ({ ...c, [name]: value }))} showExtraPrice={!comingSoon} />
 
       {comingSoon ? (
         <div className="space-y-3">

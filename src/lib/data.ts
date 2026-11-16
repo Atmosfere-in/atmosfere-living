@@ -2,7 +2,7 @@ import "server-only";
 import { createClient } from "./supabase/server";
 import { demoCategories, demoProducts } from "./demo-data";
 import { isSupabaseConfigured } from "./utils";
-import type { Category, Product, Review } from "./types";
+import type { Category, Product, Review, VibeCorner } from "./types";
 
 const PRODUCT_SELECT = "*, category:categories(name, slug)";
 
@@ -131,6 +131,44 @@ export async function getRatings(): Promise<Record<string, { avg: number; count:
   const { data, error } = await supabase.from("product_ratings").select("*");
   if (error) return {};
   return Object.fromEntries((data ?? []).map((r) => [r.product_id, { avg: Number(r.avg_rating), count: r.review_count }]));
+}
+
+// ---------------------------------------------------------------- Shop by Vibe
+
+const CORNER_SELECT = "*, items:vibe_corner_items(*, product:products(*, category:categories(name, slug)))";
+
+/** Keeps only dots whose product is still on sale, in their set order. */
+function tidyCorner(c: VibeCorner): VibeCorner {
+  return {
+    ...c,
+    items: (c.items ?? []).filter((i) => i.product?.is_active).sort((a, b) => a.sort_order - b.sort_order),
+  };
+}
+
+export async function getCorners(): Promise<VibeCorner[]> {
+  if (isDemoCatalog()) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("vibe_corners").select(CORNER_SELECT).eq("is_active", true).order("sort_order");
+  if (error) return [];
+  return (data as VibeCorner[]).map(tidyCorner);
+}
+
+export async function getCornerBySlug(slug: string): Promise<VibeCorner | null> {
+  if (isDemoCatalog()) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("vibe_corners").select(CORNER_SELECT).eq("slug", slug).eq("is_active", true).maybeSingle();
+  if (error || !data) return null;
+  return tidyCorner(data as VibeCorner);
+}
+
+/** Corners a product is styled in, for "See it styled" on its page. */
+export async function getCornersForProduct(productId: string): Promise<VibeCorner[]> {
+  if (isDemoCatalog()) return [];
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("vibe_corner_items").select("corner:vibe_corners(*)").eq("product_id", productId);
+  if (error || !data) return [];
+  const corners = (data as unknown as { corner: VibeCorner | null }[]).map((r) => r.corner).filter((c): c is VibeCorner => !!c?.is_active);
+  return [...new Map(corners.map((c) => [c.id, c])).values()].sort((a, b) => a.sort_order - b.sort_order);
 }
 
 function sorter(sort?: SortKey) {
