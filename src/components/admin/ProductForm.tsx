@@ -7,7 +7,7 @@ import { ArrowDown, ArrowUp, ImagePlus, X } from "lucide-react";
 import { saveProduct } from "@/lib/actions/admin";
 import { OptionsEditor } from "./OptionsEditor";
 import { createClient } from "@/lib/supabase/client";
-import { img, slugify } from "@/lib/utils";
+import { DEFAULT_DELIVERY, img, slugify } from "@/lib/utils";
 import type { Category, Product } from "@/lib/types";
 
 export function ProductForm({ product, categories }: { product?: Product; categories: Pick<Category, "id" | "name">[] }) {
@@ -210,6 +210,11 @@ export function ProductForm({ product, categories }: { product?: Product; catego
           <div>
             <label className="label">Stock</label>
             <input name="stock" type="number" min="0" step="1" defaultValue={product?.stock ?? 0} className="field" />
+          </div>
+          <div>
+            <label className="label">Delivery time</label>
+            <input name="delivery_time" defaultValue={product?.delivery_time ?? ""} placeholder={DEFAULT_DELIVERY} className="field" />
+            <p className="mt-1 text-xs text-stone-400">Leave blank to use the default shown here.</p>
           </div>
         </section>
 

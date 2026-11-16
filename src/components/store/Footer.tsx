@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
+import { POLICY_LINKS } from "./PolicyPage";
 
 export function Footer() {
   return (
     <footer className="bg-charcoal text-ivory">
       <div className="container-lux grid gap-14 py-20 md:grid-cols-12">
-        <div className="md:col-span-5 space-y-6">
+        <div className="md:col-span-4 space-y-6">
           <Logo className="h-7" />
           <p className="display text-3xl leading-snug text-ivory/90 max-w-sm">
             Curated furniture and decor, styled corner by corner.
@@ -39,6 +40,7 @@ export function Footer() {
             ["/cart", "Bag"],
           ]}
         />
+        <FooterCol title="Help" links={POLICY_LINKS} />
         <FooterCol
           title="Atmosfere"
           links={[

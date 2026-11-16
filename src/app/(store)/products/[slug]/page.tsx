@@ -9,7 +9,7 @@ import { Gallery } from "@/components/store/Gallery";
 import { AddToCart } from "@/components/store/AddToCart";
 import { ReviewForm } from "@/components/store/ReviewForm";
 import { Stars } from "@/components/store/Stars";
-import { fmtDate, img, inr, usableOptions } from "@/lib/utils";
+import { DEFAULT_DELIVERY, fmtDate, img, inr, usableOptions } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -45,8 +45,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ["Materials", product.materials],
     ["Dimensions", product.dimensions],
     ["Care", product.care],
-    ["Delivery", "Ships in 5–10 working days. Large furniture is delivered and placed by our white-glove team."],
-    ["Returns", "Eligible pieces can be returned within 14 days of delivery in their original condition."],
+    ["Delivery", `${product.delivery_time || DEFAULT_DELIVERY} Delivery charges and timelines are explained in our shipping policy.`],
+    ["Returns", "Made-to-order and customised pieces are not returnable. Damaged or defective items are repaired or replaced — see our returns policy."],
   ].filter(([, v]) => v) as [string, string][];
 
   return (

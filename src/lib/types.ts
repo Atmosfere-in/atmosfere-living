@@ -53,6 +53,8 @@ export interface Product {
   is_active: boolean;
   is_featured: boolean;
   options?: ProductOption[] | null;
+  /** Shown on the product page; blank falls back to the store default. */
+  delivery_time?: string | null;
   /** Listed without a price and can't be ordered yet. */
   is_coming_soon?: boolean;
   /** Sample product; real products always list before demo ones. */

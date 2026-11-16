@@ -67,6 +67,7 @@ export async function saveProduct(fd: FormData): Promise<ActionResult> {
     materials: str(fd, "materials"),
     dimensions: str(fd, "dimensions"),
     care: str(fd, "care"),
+    delivery_time: str(fd, "delivery_time"),
     images,
     is_active: fd.get("is_active") === "on",
     is_featured: fd.get("is_featured") === "on",
