@@ -36,8 +36,8 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
         Complimentary shipping on orders above ₹5,000 · Use <span className="text-ink">WELCOME10</span> for 10% off
       </div>
       <header className="sticky top-0 z-40 bg-ivory/95 text-ink backdrop-blur-md shadow-[0_1px_0_var(--color-stone-200)]">
-        <div className="container-lux flex h-[var(--header-height)] items-center justify-between gap-6">
-          <Link href="/" aria-label="Atmosfere Living home" className="shrink-0">
+        <div className="container-lux flex h-[var(--header-height)] items-center justify-between gap-3 sm:gap-6">
+          <Link href="/" aria-label="Atmosfere Living home" className="min-w-0 shrink-0">
             <BrandLockup />
           </Link>
 
@@ -53,14 +53,14 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
             ))}
           </nav>
 
-          <div className="flex items-center gap-1">
+          <div className="flex shrink-0 items-center sm:gap-1">
             <IconBtn label="Search" onClick={() => setSearch((s) => !s)}>
               {search ? <X size={18} strokeWidth={1.4} /> : <Search size={18} strokeWidth={1.4} />}
             </IconBtn>
             <Link
               href={user ? "/account" : "/login"}
               aria-label={user ? "Your account" : "Sign in"}
-              className="grid h-10 w-10 place-items-center rounded-full hover:bg-current/5"
+              className="hidden h-10 w-10 place-items-center rounded-full hover:bg-current/5 sm:grid"
             >
               <User size={18} strokeWidth={1.4} />
             </Link>
@@ -77,7 +77,7 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
             <button
               aria-label="Menu"
               onClick={() => setMenu((m) => !m)}
-              className="lg:hidden ml-1 grid h-10 w-10 place-items-center"
+              className="lg:hidden grid h-10 w-9 place-items-center cursor-pointer sm:ml-1"
             >
               <span className="relative block h-3 w-6">
                 <span className={cx("absolute left-0 h-px w-6 bg-current transition-transform duration-500", menu ? "top-1.5 rotate-45" : "top-0")} />
@@ -133,7 +133,7 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
 
 function IconBtn({ children, label, onClick }: { children: React.ReactNode; label: string; onClick: () => void }) {
   return (
-    <button aria-label={label} onClick={onClick} className="grid h-10 w-10 place-items-center rounded-full cursor-pointer">
+    <button aria-label={label} onClick={onClick} className="grid h-10 w-9 place-items-center rounded-full cursor-pointer sm:w-10">
       {children}
     </button>
   );

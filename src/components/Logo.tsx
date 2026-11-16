@@ -3,7 +3,7 @@ import { cx } from "@/lib/utils";
 /** Atmosfere wordmark (from atmosfere.in), inherits currentColor. */
 export function Logo({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 3106 510" role="img" aria-label="atmosfere" className={cx("h-[22px] w-auto fill-current", className)}>
+    <svg viewBox="0 0 3106 510" role="img" aria-label="atmosfere" className={cx(className ?? "h-[22px]", "w-auto fill-current")}>
       <path
         fillRule="evenodd"
         d="M342 500V191c0-83.395-67.605-151-151-151S40 107.605 40 191v309H9c-3.042 0-6.044.166-9 .488V191C0 85.514 85.514 0 191 0s191 85.514 191 191v310.19a82.6 82.6 0 0 0-14-1.19z"
@@ -21,10 +21,10 @@ export function Logo({ className }: { className?: string }) {
 /** Wordmark + "LIVING" sub-brand, matching the atmosfere.in "| SPACES" lockup. */
 export function BrandLockup({ className }: { className?: string }) {
   return (
-    <span className={cx("inline-flex items-center gap-4", className)}>
-      <Logo />
+    <span className={cx("inline-flex items-center gap-2.5 sm:gap-4", className)}>
+      <Logo className="h-[17px] sm:h-[22px]" />
       <span className="h-4 w-px bg-current opacity-30" />
-      <span className="text-[0.65rem] font-medium tracking-[0.32em] uppercase">Living</span>
+      <span className="text-[0.6rem] font-medium tracking-[0.24em] uppercase sm:text-[0.65rem] sm:tracking-[0.32em]">Living</span>
     </span>
   );
 }
