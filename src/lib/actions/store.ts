@@ -79,7 +79,7 @@ export async function checkDiscount(code: string, subtotal: number): Promise<Act
 }
 
 export async function placeOrder(input: {
-  items: { product_id: string; quantity: number }[];
+  items: { product_id: string; quantity: number; options?: Record<string, string> }[];
   address: ShippingAddress;
   discountCode?: string | null;
   paymentMethod: string;

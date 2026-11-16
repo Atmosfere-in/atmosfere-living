@@ -5,7 +5,8 @@ import { img, inr } from "@/lib/utils";
 import { Stars } from "./Stars";
 
 export function ProductCard({ product, rating, priority }: { product: Product; rating?: { avg: number; count: number }; priority?: boolean }) {
-  const onSale = product.compare_at_price && product.compare_at_price > product.price;
+  const comingSoon = !!product.is_coming_soon;
+  const onSale = !comingSoon && product.compare_at_price && product.compare_at_price > product.price;
   const second = product.images[1];
   return (
     <Link href={`/products/${product.slug}`} className="group block">
@@ -28,16 +29,17 @@ export function ProductCard({ product, rating, priority }: { product: Product; r
           />
         )}
         <div className="absolute left-3 top-3 flex gap-2">
+          {comingSoon && <span className="badge bg-charcoal text-ivory">Coming soon</span>}
           {onSale && <span className="badge bg-ivory/90 text-accent">Offer</span>}
-          {product.stock === 0 && <span className="badge bg-charcoal text-ivory">Sold out</span>}
-          {product.stock > 0 && product.stock <= 3 && <span className="badge bg-ivory/90">Only {product.stock} left</span>}
+          {!comingSoon && product.stock === 0 && <span className="badge bg-charcoal text-ivory">Sold out</span>}
+          {!comingSoon && product.stock > 0 && product.stock <= 3 && <span className="badge bg-ivory/90">Only {product.stock} left</span>}
         </div>
       </div>
       <div className="mt-4 space-y-1">
         {product.category && <p className="text-[0.65rem] tracking-[0.24em] uppercase text-stone-400">{product.category.name}</p>}
         <h3 className="font-display text-lg leading-snug">{product.name}</h3>
         <div className="flex items-center gap-3 text-sm">
-          <span>{inr(product.price)}</span>
+          <span>{comingSoon ? "Price on launch" : inr(product.price)}</span>
           {onSale && <span className="text-stone-400 line-through">{inr(product.compare_at_price)}</span>}
         </div>
         {rating && rating.count > 0 && (

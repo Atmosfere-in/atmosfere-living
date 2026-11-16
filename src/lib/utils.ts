@@ -32,3 +32,25 @@ export const shippingFor = (amount: number) => (amount >= FREE_SHIPPING_THRESHOL
 
 export const isSupabaseConfigured = () =>
   Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+type OptionLike = { name: string; values: { label: string; price: number }[] };
+
+/** Variations that actually have choices (empty ones are ignored everywhere). */
+export const usableOptions = <T extends OptionLike>(options: T[] | null | undefined): T[] =>
+  (options ?? []).filter((o) => o?.name?.trim() && o.values?.length);
+
+/** Base price plus the extra charge of each chosen value. */
+export const priceWithOptions = (base: number, options: OptionLike[] | null | undefined, chosen: Record<string, string>) =>
+  usableOptions(options).reduce((sum, o) => sum + Number(o.values.find((v) => v.label === chosen[o.name])?.price ?? 0), Number(base));
+
+/** "Polish: Walnut · Fabric: Jacquard" */
+export const optionsText = (chosen: Record<string, string> | null | undefined) =>
+  Object.entries(chosen ?? {})
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(" · ");
+
+/** One bag line per product + choice combination. */
+export const cartLineId = (productId: string, chosen: Record<string, string> | null | undefined) => {
+  const keys = Object.keys(chosen ?? {}).sort();
+  return keys.length ? `${productId}|${keys.map((k) => `${k}=${chosen![k]}`).join("|")}` : productId;
+};

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { slugify } from "@/lib/utils";
 import type { ActionResult } from "./store";
-import type { OrderStatus, PaymentStatus, ReviewStatus, Role } from "@/lib/types";
+import type { OrderStatus, PaymentStatus, ProductOption, ReviewStatus, Role } from "@/lib/types";
 
 /** Every admin action re-checks the role server-side; RLS enforces it again in the database. */
 async function admin() {
@@ -27,6 +27,23 @@ const num = (fd: FormData, k: string) => {
   const v = str(fd, k);
   return v === null ? null : Number(v);
 };
+
+/** Parses the variations JSON from the product form, dropping blank names/choices. */
+function parseOptions(fd: FormData): ProductOption[] {
+  try {
+    const raw = JSON.parse(str(fd, "options") ?? "[]") as ProductOption[];
+    return raw
+      .map((o) => ({
+        name: String(o.name ?? "").trim(),
+        values: (o.values ?? [])
+          .map((v) => ({ label: String(v.label ?? "").trim(), price: Math.max(0, Number(v.price) || 0) }))
+          .filter((v) => v.label),
+      }))
+      .filter((o) => o.name && o.values.length);
+  } catch {
+    return [];
+  }
+}
 
 // ---------------------------------------------------------------- Products
 export async function saveProduct(fd: FormData): Promise<ActionResult> {
@@ -53,7 +70,11 @@ export async function saveProduct(fd: FormData): Promise<ActionResult> {
     images,
     is_active: fd.get("is_active") === "on",
     is_featured: fd.get("is_featured") === "on",
+    is_coming_soon: fd.get("is_coming_soon") === "on",
+    is_demo: fd.get("is_demo") === "on",
+    options: parseOptions(fd),
   };
+  if (!row.is_coming_soon && price <= 0) return { ok: false, error: "Set a price above ₹0, or tick “Coming soon”." };
 
   const { error } = id ? await supabase.from("products").update(row).eq("id", id) : await supabase.from("products").insert(row);
   if (error) return { ok: false, error: error.code === "23505" ? "That slug or SKU is already in use." : error.message };

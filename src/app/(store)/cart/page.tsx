@@ -5,7 +5,7 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { Qty } from "@/components/cart/CartDrawer";
-import { img, inr, shippingFor } from "@/lib/utils";
+import { img, inr, optionsText, shippingFor } from "@/lib/utils";
 
 export default function CartPage() {
   const { items, subtotal, update, remove, ready } = useCart();
@@ -27,7 +27,7 @@ export default function CartPage() {
         <div className="mt-12 grid gap-14 lg:grid-cols-12">
           <ul className="divide-y divide-stone-200 border-y border-stone-200 lg:col-span-8">
             {items.map((i) => (
-              <li key={i.productId} className="flex gap-6 py-7">
+              <li key={i.lineId} className="flex gap-6 py-7">
                 <Link href={`/products/${i.slug}`} className="relative h-36 w-28 shrink-0 overflow-hidden rounded-lg bg-stone-100">
                   <Image src={img(i.image, 400)} alt={i.name} fill sizes="112px" className="object-cover" />
                 </Link>
@@ -36,13 +36,14 @@ export default function CartPage() {
                     <Link href={`/products/${i.slug}`} className="font-display text-xl">
                       {i.name}
                     </Link>
-                    <button onClick={() => remove(i.productId)} aria-label={`Remove ${i.name}`} className="text-stone-400 hover:text-ink cursor-pointer">
+                    <button onClick={() => remove(i.lineId)} aria-label={`Remove ${i.name}`} className="text-stone-400 hover:text-ink cursor-pointer">
                       <X size={18} strokeWidth={1.4} />
                     </button>
                   </div>
+                  {i.options && Object.keys(i.options).length > 0 && <p className="mt-1 text-sm text-stone-600">{optionsText(i.options)}</p>}
                   <p className="mt-1 text-sm text-stone-600">{inr(i.price)}</p>
                   <div className="mt-auto flex items-center justify-between">
-                    <Qty value={i.quantity} max={i.stock} onChange={(q) => update(i.productId, q)} />
+                    <Qty value={i.quantity} max={i.stock} onChange={(q) => update(i.lineId, q)} />
                     <span className="font-display text-lg">{inr(i.price * i.quantity)}</span>
                   </div>
                 </div>

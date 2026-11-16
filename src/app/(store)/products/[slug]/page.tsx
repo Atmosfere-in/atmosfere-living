@@ -9,7 +9,7 @@ import { Gallery } from "@/components/store/Gallery";
 import { AddToCart } from "@/components/store/AddToCart";
 import { ReviewForm } from "@/components/store/ReviewForm";
 import { Stars } from "@/components/store/Stars";
-import { fmtDate, img, inr } from "@/lib/utils";
+import { fmtDate, img, inr, usableOptions } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -37,7 +37,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   }
 
   const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
-  const onSale = product.compare_at_price && product.compare_at_price > product.price;
+  const comingSoon = !!product.is_coming_soon;
+  const onSale = !comingSoon && product.compare_at_price && product.compare_at_price > product.price;
+  const priceVaries = usableOptions(product.options).some((o) => o.values.some((v) => Number(v.price) > 0));
 
   const details = [
     ["Materials", product.materials],
@@ -79,7 +81,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </a>
           )}
           <div className="mt-6 flex items-baseline gap-4">
-            <span className="font-display text-3xl">{inr(product.price)}</span>
+            <span className="font-display text-3xl">{comingSoon ? "Coming soon" : `${priceVaries ? "From " : ""}${inr(product.price)}`}</span>
             {onSale && (
               <>
                 <span className="text-stone-400 line-through">{inr(product.compare_at_price)}</span>
@@ -87,7 +89,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </>
             )}
           </div>
-          <p className="mt-1 text-xs text-stone-400">Inclusive of all taxes</p>
+          <p className="mt-1 text-xs text-stone-400">{comingSoon ? "Price announced at launch" : "Inclusive of all taxes"}</p>
 
           <p className="mt-8 text-stone-600 font-light leading-relaxed">{product.description ?? product.short_description}</p>
 
@@ -101,6 +103,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 image: product.images[0] ?? null,
                 stock: product.stock,
               }}
+              options={product.options}
+              comingSoon={comingSoon}
               saved={saved}
               signedIn={!!user}
             />

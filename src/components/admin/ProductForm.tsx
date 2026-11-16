@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { ArrowDown, ArrowUp, ImagePlus, X } from "lucide-react";
 import { saveProduct } from "@/lib/actions/admin";
+import { OptionsEditor } from "./OptionsEditor";
 import { createClient } from "@/lib/supabase/client";
 import { img, slugify } from "@/lib/utils";
 import type { Category, Product } from "@/lib/types";
@@ -182,6 +183,8 @@ export function ProductForm({ product, categories }: { product?: Product; catego
             <input name="care" defaultValue={product?.care ?? ""} className="field" />
           </div>
         </section>
+
+        <OptionsEditor initial={product?.options} />
       </div>
 
       <div className="space-y-8">
@@ -190,7 +193,15 @@ export function ProductForm({ product, categories }: { product?: Product; catego
           <div>
             <label className="label">Price (₹) *</label>
             <input name="price" type="number" min="0" step="1" required defaultValue={product?.price ?? ""} className="field" />
+            <p className="mt-1 text-xs text-stone-400">Base price. Variations can add to it.</p>
           </div>
+          <label className="flex items-start gap-3 text-sm">
+            <input type="checkbox" name="is_coming_soon" defaultChecked={product?.is_coming_soon ?? false} className="mt-1 accent-[var(--color-accent)]" />
+            <span>
+              Coming soon
+              <span className="block text-xs text-stone-400">Shown in the store without a price; can’t be ordered yet.</span>
+            </span>
+          </label>
           <div>
             <label className="label">Compare-at price (₹)</label>
             <input name="compare_at_price" type="number" min="0" step="1" defaultValue={product?.compare_at_price ?? ""} className="field" />
@@ -222,6 +233,10 @@ export function ProductForm({ product, categories }: { product?: Product; catego
           <label className="flex items-center gap-3 text-sm">
             <input type="checkbox" name="is_featured" defaultChecked={product?.is_featured ?? false} className="accent-[var(--color-accent)]" />
             Feature on homepage
+          </label>
+          <label className="flex items-center gap-3 text-sm">
+            <input type="checkbox" name="is_demo" defaultChecked={product?.is_demo ?? false} className="accent-[var(--color-accent)]" />
+            Demo product (listed after real products)
           </label>
         </section>
 

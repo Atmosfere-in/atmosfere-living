@@ -1,8 +1,11 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { cartLineId } from "@/lib/utils";
 
 export interface CartItem {
+  /** Unique per product + chosen variations. */
+  lineId: string;
   productId: string;
   slug: string;
   name: string;
@@ -10,6 +13,8 @@ export interface CartItem {
   image: string | null;
   quantity: number;
   stock: number;
+  /** Chosen variations, e.g. { Polish: "Walnut" }. */
+  options?: Record<string, string>;
 }
 
 interface CartCtx {
@@ -19,9 +24,9 @@ interface CartCtx {
   open: boolean;
   ready: boolean;
   setOpen: (v: boolean) => void;
-  add: (item: Omit<CartItem, "quantity">, qty?: number) => void;
-  update: (productId: string, qty: number) => void;
-  remove: (productId: string) => void;
+  add: (item: Omit<CartItem, "quantity" | "lineId">, qty?: number) => void;
+  update: (lineId: string, qty: number) => void;
+  remove: (lineId: string) => void;
   clear: () => void;
 }
 
@@ -36,7 +41,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) setItems((JSON.parse(raw) as CartItem[]).map((i) => ({ ...i, lineId: i.lineId ?? cartLineId(i.productId, i.options) })));
     } catch {}
     setReady(true);
   }, []);
@@ -49,27 +54,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, ready]);
 
   const add = useCallback<CartCtx["add"]>((item, qty = 1) => {
+    const lineId = cartLineId(item.productId, item.options);
     setItems((prev) => {
-      const existing = prev.find((i) => i.productId === item.productId);
+      const existing = prev.find((i) => i.lineId === lineId);
       if (existing) {
-        return prev.map((i) =>
-          i.productId === item.productId ? { ...i, ...item, quantity: Math.min(i.quantity + qty, item.stock) } : i,
-        );
+        return prev.map((i) => (i.lineId === lineId ? { ...i, ...item, quantity: Math.min(i.quantity + qty, item.stock) } : i));
       }
-      return [...prev, { ...item, quantity: Math.min(qty, item.stock) }];
+      return [...prev, { ...item, lineId, quantity: Math.min(qty, item.stock) }];
     });
     setOpen(true);
   }, []);
 
-  const update = useCallback((productId: string, qty: number) => {
+  const update = useCallback((lineId: string, qty: number) => {
     setItems((prev) =>
       prev
-        .map((i) => (i.productId === productId ? { ...i, quantity: Math.max(0, Math.min(qty, i.stock)) } : i))
+        .map((i) => (i.lineId === lineId ? { ...i, quantity: Math.max(0, Math.min(qty, i.stock)) } : i))
         .filter((i) => i.quantity > 0),
     );
   }, []);
 
-  const remove = useCallback((productId: string) => setItems((p) => p.filter((i) => i.productId !== productId)), []);
+  const remove = useCallback((lineId: string) => setItems((p) => p.filter((i) => i.lineId !== lineId)), []);
   const clear = useCallback(() => setItems([]), []);
 
   const value = useMemo<CartCtx>(

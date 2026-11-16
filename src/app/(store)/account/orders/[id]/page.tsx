@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/StatusBadge";
 import { CancelOrderButton } from "@/components/account/CancelOrderButton";
 import type { Order, OrderStatus } from "@/lib/types";
-import { cx, fmtDate, img, inr } from "@/lib/utils";
+import { cx, fmtDate, img, inr, optionsText } from "@/lib/utils";
 
 const STEPS: OrderStatus[] = ["pending", "confirmed", "processing", "shipped", "delivered"];
 const PAY: Record<string, string> = { cod: "Cash / UPI on delivery", bank_transfer: "Bank transfer", online: "Online" };
@@ -71,6 +71,7 @@ export default async function OrderDetail({ params, searchParams }: { params: Pr
               </div>
               <div className="flex-1">
                 <p className="font-display text-lg">{it.product_name}</p>
+                {optionsText(it.options) && <p className="text-sm text-stone-600">{optionsText(it.options)}</p>}
                 <p className="text-sm text-stone-600">
                   {inr(it.unit_price)} × {it.quantity}
                 </p>

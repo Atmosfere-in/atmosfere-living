@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useCart } from "@/components/cart/CartProvider";
 import { checkDiscount, placeOrder } from "@/lib/actions/store";
-import { cx, img, inr, shippingFor } from "@/lib/utils";
+import { cx, img, inr, optionsText, shippingFor } from "@/lib/utils";
 import type { Address, ShippingAddress } from "@/lib/types";
 
 const STATES = [
@@ -78,7 +78,7 @@ export function CheckoutForm({
       : addr;
     start(async () => {
       const r = await placeOrder({
-        items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity })),
+        items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity, options: i.options ?? {} })),
         address: shippingAddress,
         discountCode: discount?.code,
         paymentMethod: payment,
@@ -190,12 +190,15 @@ export function CheckoutForm({
           <h2 className="display text-2xl">Your order</h2>
           <ul className="space-y-4">
             {items.map((i) => (
-              <li key={i.productId} className="flex items-center gap-4">
+              <li key={i.lineId} className="flex items-center gap-4">
                 <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-md bg-stone-100">
                   <Image src={img(i.image, 200)} alt="" fill sizes="56px" className="object-cover" />
                   <span className="absolute -right-0 -top-0 grid h-5 min-w-5 place-items-center rounded-bl-md bg-charcoal px-1 text-[0.6rem] text-ivory">{i.quantity}</span>
                 </div>
-                <span className="flex-1 text-sm">{i.name}</span>
+                <span className="flex-1 text-sm">
+                  {i.name}
+                  {i.options && Object.keys(i.options).length > 0 && <span className="block text-xs text-stone-600">{optionsText(i.options)}</span>}
+                </span>
                 <span className="text-sm">{inr(i.price * i.quantity)}</span>
               </li>
             ))}

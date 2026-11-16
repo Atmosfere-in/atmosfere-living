@@ -12,7 +12,9 @@ export const metadata = { title: "Products" };
 export default async function AdminProducts({ searchParams }: { searchParams: Promise<{ q?: string; category?: string; saved?: string }> }) {
   const { q, category, saved } = await searchParams;
   const supabase = await createClient();
-  let query = supabase.from("products").select("*, category:categories(name, slug)").order("created_at", { ascending: false });
+  let query = supabase.from("products").select("*, category:categories(name, slug)")
+    .order("is_demo", { ascending: true })
+    .order("created_at", { ascending: false });
   if (q) query = query.or(`name.ilike.%${q.replace(/[%,()]/g, "")}%,sku.ilike.%${q.replace(/[%,()]/g, "")}%`);
   if (category) query = query.eq("category_id", category);
   const [{ data }, { data: cats }] = await Promise.all([query, supabase.from("categories").select("id, name").order("sort_order")]);
@@ -58,14 +60,17 @@ export default async function AdminProducts({ searchParams }: { searchParams: Pr
                     </span>
                     <span>
                       <span className="block font-medium hover:underline">{p.name}</span>
-                      <span className="block text-xs text-stone-400">{p.sku ?? p.slug}</span>
+                      <span className="block text-xs text-stone-400">
+                        {p.sku ?? p.slug}
+                        {p.is_demo && <span className="badge ml-2 bg-stone-100 !text-[0.55rem]">Demo</span>}
+                      </span>
                     </span>
                   </Link>
                 </Td>
                 <Td className="text-stone-600">{p.category?.name ?? "—"}</Td>
                 <Td>
-                  {inr(p.price)}
-                  {p.compare_at_price && <span className="ml-2 text-xs text-stone-400 line-through">{inr(p.compare_at_price)}</span>}
+                  {p.is_coming_soon ? <span className="text-stone-600">Coming soon</span> : inr(p.price)}
+                  {!p.is_coming_soon && p.compare_at_price && <span className="ml-2 text-xs text-stone-400 line-through">{inr(p.compare_at_price)}</span>}
                 </Td>
                 <Td>
                   <span className={p.stock === 0 ? "text-red-700" : p.stock <= 5 ? "text-amber-700" : ""}>{p.stock}</span>

@@ -70,6 +70,8 @@ export async function getProducts(opts: ProductQuery = {}): Promise<Product[]> {
     query = query.or(`name.ilike.%${q}%,short_description.ilike.%${q}%`);
   }
 
+  // Real products first, then demo ones; within each group, the chosen sort.
+  query = query.order("is_demo", { ascending: true });
   switch (opts.sort) {
     case "price-asc":
       query = query.order("price", { ascending: true });

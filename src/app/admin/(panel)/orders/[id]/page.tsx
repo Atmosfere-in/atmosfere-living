@@ -6,7 +6,7 @@ import { PageHeader, Panel } from "@/components/admin/ui";
 import { OrderControls } from "@/components/admin/OrderControls";
 import { StatusBadge } from "@/components/StatusBadge";
 import type { Order } from "@/lib/types";
-import { fmtDate, img, inr } from "@/lib/utils";
+import { fmtDate, img, inr, optionsText } from "@/lib/utils";
 
 export const metadata = { title: "Order" };
 
@@ -52,6 +52,7 @@ export default async function AdminOrder({ params }: { params: Promise<{ id: str
                     ) : (
                       it.product_name
                     )}
+                    {optionsText(it.options) && <span className="block font-medium text-ink">{optionsText(it.options)}</span>}
                     <span className="block text-stone-600">
                       {inr(it.unit_price)} × {it.quantity}
                     </span>

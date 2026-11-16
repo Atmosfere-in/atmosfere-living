@@ -23,6 +23,18 @@ export interface Category {
   sort_order: number;
 }
 
+/** A variation a customer picks, e.g. Polish → Natural / Walnut. `price` is added to the base price. */
+export interface ProductOptionValue {
+  label: string;
+  price: number;
+}
+export interface ProductOption {
+  name: string;
+  values: ProductOptionValue[];
+}
+/** What the customer chose, e.g. { Polish: "Walnut", Fabric: "Jacquard" }. */
+export type ChosenOptions = Record<string, string>;
+
 export interface Product {
   id: string;
   name: string;
@@ -40,6 +52,11 @@ export interface Product {
   care: string | null;
   is_active: boolean;
   is_featured: boolean;
+  options?: ProductOption[] | null;
+  /** Listed without a price and can't be ordered yet. */
+  is_coming_soon?: boolean;
+  /** Sample product; real products always list before demo ones. */
+  is_demo?: boolean;
   created_at: string;
   category?: Pick<Category, "name" | "slug"> | null;
 }
@@ -69,6 +86,7 @@ export interface OrderItem {
   product_image: string | null;
   unit_price: number;
   quantity: number;
+  options?: ChosenOptions | null;
 }
 
 export interface Order {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { Minus, Plus, X } from "lucide-react";
 import { useCart } from "./CartProvider";
-import { FREE_SHIPPING_THRESHOLD, cx, img, inr } from "@/lib/utils";
+import { FREE_SHIPPING_THRESHOLD, cx, img, inr, optionsText } from "@/lib/utils";
 
 export function CartDrawer() {
   const { items, open, setOpen, subtotal, update, remove } = useCart();
@@ -66,7 +66,7 @@ export function CartDrawer() {
             </div>
             <ul className="flex-1 divide-y divide-stone-200 overflow-y-auto px-6">
               {items.map((i) => (
-                <li key={i.productId} className="flex gap-4 py-5">
+                <li key={i.lineId} className="flex gap-4 py-5">
                   <Link href={`/products/${i.slug}`} onClick={() => setOpen(false)} className="relative h-28 w-22 shrink-0 overflow-hidden bg-stone-100">
                     <Image src={img(i.image, 300)} alt={i.name} fill sizes="88px" className="object-cover" />
                   </Link>
@@ -75,13 +75,14 @@ export function CartDrawer() {
                       <Link href={`/products/${i.slug}`} onClick={() => setOpen(false)} className="font-display text-lg leading-tight">
                         {i.name}
                       </Link>
-                      <button aria-label={`Remove ${i.name}`} onClick={() => remove(i.productId)} className="text-stone-400 hover:text-ink cursor-pointer">
+                      <button aria-label={`Remove ${i.name}`} onClick={() => remove(i.lineId)} className="text-stone-400 hover:text-ink cursor-pointer">
                         <X size={16} strokeWidth={1.4} />
                       </button>
                     </div>
+                    {i.options && Object.keys(i.options).length > 0 && <p className="mt-1 text-xs text-stone-600">{optionsText(i.options)}</p>}
                     <p className="mt-1 text-sm text-stone-600">{inr(i.price)}</p>
                     <div className="mt-auto flex items-center justify-between">
-                      <Qty value={i.quantity} max={i.stock} onChange={(q) => update(i.productId, q)} />
+                      <Qty value={i.quantity} max={i.stock} onChange={(q) => update(i.lineId, q)} />
                       <span className="text-sm">{inr(i.price * i.quantity)}</span>
                     </div>
                   </div>
