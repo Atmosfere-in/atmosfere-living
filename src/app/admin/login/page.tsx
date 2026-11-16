@@ -17,19 +17,19 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
   const signedInAsCustomer = !!user && profile?.role !== "admin";
 
   return (
-    <div className="flex min-h-svh flex-col bg-charcoal px-[var(--gutter)] py-10 text-ivory">
+    <div className="flex min-h-svh flex-col bg-ivory px-[var(--gutter)] py-10 text-ink">
       <div className="flex items-center gap-3">
         <BrandLockup />
-        <span className="badge bg-ivory/10 text-ivory/70">Admin</span>
+        <span className="badge bg-stone-100 text-stone-600">Admin</span>
       </div>
 
       <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-16">
-        <p className="eyebrow !text-stone-400">Staff only</p>
+        <p className="eyebrow">Staff only</p>
         <h1 className="display mt-4 text-5xl">Admin sign in</h1>
-        <p className="mt-4 text-ivory/60 font-light">Manage products, orders, customers and offers for Atmosfere Living.</p>
+        <p className="mt-4 text-stone-600 font-light">Manage products, orders, customers and offers for Atmosfere Living.</p>
 
         {(error === "not_admin" || signedInAsCustomer) && (
-          <p className="mt-6 rounded-sm bg-red-950/60 px-4 py-3 text-sm text-red-200">
+          <p className="mt-6 rounded-sm bg-red-50 px-4 py-3 text-sm text-red-800">
             This account doesn&apos;t have admin access. Sign in with an admin account.
           </p>
         )}
@@ -39,7 +39,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
         </div>
       </div>
 
-      <Link href="/" className="text-sm text-ivory/50 hover:text-ivory">
+      <Link href="/" className="text-sm text-stone-600 hover:text-ink">
         ← Back to the store
       </Link>
     </div>

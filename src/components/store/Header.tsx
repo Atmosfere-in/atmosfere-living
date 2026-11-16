@@ -21,37 +21,21 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
   const pathname = usePathname();
   const router = useRouter();
   const { count, setOpen, ready } = useCart();
-  const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
 
-  const overlay = pathname === "/";
-  useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 40);
-    on();
-    window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
   useEffect(() => {
     setMenu(false);
     setSearch(false);
   }, [pathname]);
 
-  const transparent = overlay && !scrolled && !menu && !search;
-
   return (
     <>
-      <div className="bg-charcoal text-ivory/80 text-center text-[0.68rem] tracking-[0.22em] uppercase py-2.5 px-4">
-        Complimentary shipping on orders above ₹5,000 · Use <span className="text-ivory">WELCOME10</span> for 10% off
+      <div className="bg-stone-100 text-stone-600 text-center text-[0.68rem] tracking-[0.22em] uppercase py-2.5 px-4">
+        Complimentary shipping on orders above ₹5,000 · Use <span className="text-ink">WELCOME10</span> for 10% off
       </div>
-      <header
-        className={cx(
-          "sticky top-0 z-40 transition-colors duration-500",
-          transparent ? "text-ivory" : "bg-ivory/95 text-ink backdrop-blur-md shadow-[0_1px_0_var(--color-stone-200)]",
-          overlay && "-mb-[var(--header-height)]",
-        )}
-      >
+      <header className="sticky top-0 z-40 bg-ivory/95 text-ink backdrop-blur-md shadow-[0_1px_0_var(--color-stone-200)]">
         <div className="container-lux flex h-[var(--header-height)] items-center justify-between gap-6">
           <Link href="/" aria-label="Atmosfere Living home" className="shrink-0">
             <BrandLockup />

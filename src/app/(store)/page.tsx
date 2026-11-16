@@ -20,27 +20,28 @@ export default async function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative h-[100svh] min-h-[640px] overflow-hidden bg-charcoal text-ivory">
-        <Image src={img(HERO, 2400)} alt="A softly lit living corner with a lounge chair and arc lamp" fill priority sizes="100vw" className="object-cover opacity-80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/10 to-charcoal/40" />
-        <div className="container-lux relative flex h-full flex-col justify-end pb-[12vh]">
-          <p className="eyebrow !text-ivory/80 rise">Style &amp; Shop</p>
-          <h1 className="display mt-5 max-w-4xl text-[clamp(2.75rem,6.5vw,6rem)] rise-2">
+      <section className="container-lux grid items-center gap-10 pb-20 pt-10 md:grid-cols-12 md:gap-16 md:pb-28 md:pt-16">
+        <div className="md:col-span-5">
+          <p className="eyebrow rise">Style &amp; Shop</p>
+          <h1 className="display mt-5 text-[clamp(2.75rem,5.5vw,5.25rem)] rise-2">
             Living, styled
             <br />
             corner by corner.
           </h1>
-          <p className="mt-6 max-w-md text-ivory/80 font-light rise-3">
+          <p className="mt-6 max-w-md text-stone-600 font-light rise-3">
             Furniture, lighting and objects chosen by the designers behind Atmosfere Spaces — for homes that feel quietly considered.
           </p>
           <div className="mt-10 flex flex-wrap gap-4 rise-3">
-            <Link href="/shop" className="btn btn-light">
+            <Link href="/shop" className="btn btn-dark">
               Shop the collection <ArrowRight size={14} />
             </Link>
-            <Link href="/shop?category=lighting" className="btn border border-ivory/40 text-ivory hover:bg-ivory/10">
-              New in lighting
+            <Link href="/shop?category=furniture" className="btn btn-outline">
+              Shop furniture
             </Link>
           </div>
+        </div>
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-stone-100 md:col-span-7 md:aspect-[5/4]">
+          <Image src={img(HERO, 2000)} alt="A softly lit living corner with a lounge chair and arc lamp" fill priority sizes="(min-width:768px) 58vw, 100vw" className="object-cover" />
         </div>
       </section>
 
@@ -57,22 +58,12 @@ export default async function Home() {
         </div>
         <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-5">
           {categories.map((c, i) => (
-            <Link
-              key={c.id}
-              href={`/shop?category=${c.slug}`}
-              className={`group relative overflow-hidden rounded-[18px] bg-charcoal text-ivory img-zoom ${i === 0 ? "col-span-2 md:col-span-1" : ""} aspect-[3/4]`}
-            >
-              {c.image_url && <Image src={img(c.image_url, 900)} alt={c.name} fill sizes="(min-width:768px) 20vw, 50vw" className="object-cover opacity-85" />}
-              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/75 via-transparent to-transparent" />
-              <span className="absolute left-5 top-5 grid h-9 w-9 place-items-center rounded-full border border-ivory/50 font-display text-sm">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="absolute inset-x-5 bottom-5">
-                <h3 className="display text-2xl">{c.name}</h3>
-                <p className="mt-1 text-xs text-ivory/70 max-h-0 overflow-hidden opacity-0 transition-all duration-700 group-hover:max-h-12 group-hover:opacity-100">
-                  {c.description}
-                </p>
+            <Link key={c.id} href={`/shop?category=${c.slug}`} className={`group block img-zoom ${i === 0 ? "col-span-2 md:col-span-1" : ""}`}>
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[18px] bg-stone-100">
+                {c.image_url && <Image src={img(c.image_url, 900)} alt={c.name} fill sizes="(min-width:768px) 20vw, 50vw" className="object-cover" />}
               </div>
+              <h3 className="display mt-4 text-2xl">{c.name}</h3>
+              {c.description && <p className="mt-1 text-xs text-stone-600 font-light">{c.description}</p>}
             </Link>
           ))}
         </div>
@@ -119,30 +110,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Promise */}
-      <section className="bg-charcoal py-24 text-ivory md:py-32">
-        <div className="container-lux">
-          <p className="eyebrow !text-stone-400">The Atmosfere promise</p>
-          <h2 className="display mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)]">Considered from the first click to the last cushion.</h2>
-          <div className="mt-14 grid gap-4 md:grid-cols-4">
-            {[
-              ["01", "Designer-curated", "Every piece is selected and styled by the Atmosfere Spaces studio."],
-              ["02", "Made by hand", "Small-batch makers across India, paid fairly and credited by name."],
-              ["03", "White-glove delivery", "Large pieces are delivered, unboxed and placed in the room you choose."],
-              ["04", "Easy returns", "Changed your mind? Return eligible pieces within 14 days of delivery."],
-            ].map(([n, t, d]) => (
-              <div key={n} className="flex min-h-64 flex-col justify-between rounded-[18px] border border-ivory/10 bg-ivory/[0.03] p-7">
-                <span className="grid h-9 w-9 place-items-center rounded-full border border-ivory/40 font-display text-sm">{n}</span>
-                <div>
-                  <h3 className="display text-2xl">{t}</h3>
-                  <p className="mt-2 text-sm text-ivory/60 font-light">{d}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Edit banner */}
       <section className="container-lux grid items-center gap-12 py-24 md:grid-cols-12 md:py-32">
         <div className="md:col-span-5 md:order-2 md:pl-10">
@@ -162,20 +129,21 @@ export default async function Home() {
       </section>
 
       {/* Spaces CTA */}
-      <section className="relative overflow-hidden bg-charcoal text-ivory">
-        <Image src={img(SPACES, 2400)} alt="" fill sizes="100vw" className="object-cover opacity-45" />
-        <div className="absolute inset-0 bg-gradient-to-r from-charcoal/90 to-charcoal/30" />
-        <div className="container-lux relative grid gap-10 py-28 md:grid-cols-2 md:items-end">
-          <h2 className="display text-[clamp(2.25rem,4.5vw,3.75rem)]">
-            Want the whole room
-            <br />
-            done for you?
-          </h2>
-          <div className="space-y-6 md:justify-self-end md:max-w-sm">
-            <p className="text-ivory/75 font-light">
+      <section className="container-lux pb-24 md:pb-32">
+        <div className="grid overflow-hidden rounded-[18px] bg-stone-100 md:grid-cols-2">
+          <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[420px]">
+            <Image src={img(SPACES, 1600)} alt="An interior designed by Atmosfere Spaces" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
+          </div>
+          <div className="flex flex-col justify-center gap-6 p-10 md:p-16">
+            <h2 className="display text-[clamp(2.25rem,4vw,3.5rem)]">
+              Want the whole room
+              <br />
+              done for you?
+            </h2>
+            <p className="max-w-sm text-stone-600 font-light">
               Atmosfere Spaces designs and builds turnkey interiors for homes and workplaces — the same team that curates this shop.
             </p>
-            <a href="https://www.atmosfere.in/spaces" className="btn btn-light">
+            <a href="https://www.atmosfere.in/spaces" className="btn btn-dark self-start">
               Discover Atmosfere Spaces <ArrowRight size={14} />
             </a>
           </div>

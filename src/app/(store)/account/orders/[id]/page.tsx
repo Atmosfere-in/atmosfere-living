@@ -25,10 +25,10 @@ export default async function OrderDetail({ params, searchParams }: { params: Pr
   return (
     <div className="space-y-10">
       {placed && (
-        <div className="rounded-[14px] bg-charcoal p-8 text-ivory">
-          <p className="eyebrow !text-stone-400">Thank you</p>
+        <div className="rounded-[14px] border border-stone-200 bg-stone-100 p-8">
+          <p className="eyebrow">Thank you</p>
           <p className="display mt-3 text-3xl">Your order is placed.</p>
-          <p className="mt-2 text-sm text-ivory/70">We&apos;ve received order #{o.order_number} and will confirm it shortly.</p>
+          <p className="mt-2 text-sm text-stone-600">We&apos;ve received order #{o.order_number} and will confirm it shortly.</p>
         </div>
       )}
 

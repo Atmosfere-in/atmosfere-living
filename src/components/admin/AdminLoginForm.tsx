@@ -52,23 +52,20 @@ export function AdminLoginForm({ next, signedIn }: { next: string; signedIn: boo
     setNotice(`If ${email} is an account, a password reset link is on its way.`);
   };
 
-  const field =
-    "w-full min-h-12 rounded-sm border border-ivory/15 bg-ivory/5 px-4 py-3 text-ivory placeholder:text-ivory/30 outline-none focus:border-accent";
-
   return (
     <form onSubmit={submit} className="space-y-5">
       <div>
-        <label className="label !text-ivory/60" htmlFor="admin-email">
+        <label className="label" htmlFor="admin-email">
           Email
         </label>
-        <input id="admin-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={field} autoComplete="username" />
+        <input id="admin-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="field" autoComplete="username" />
       </div>
       <div>
         <div className="flex items-baseline justify-between">
-          <label className="label !text-ivory/60" htmlFor="admin-password">
+          <label className="label" htmlFor="admin-password">
             Password
           </label>
-          <button type="button" onClick={forgot} className="text-xs text-ivory/50 underline hover:text-ivory cursor-pointer">
+          <button type="button" onClick={forgot} className="text-xs text-stone-600 underline hover:text-ink cursor-pointer">
             Forgot password?
           </button>
         </div>
@@ -79,17 +76,17 @@ export function AdminLoginForm({ next, signedIn }: { next: string; signedIn: boo
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`${field} pr-16`}
+            className="field pr-16"
             autoComplete="current-password"
           />
-          <button type="button" onClick={() => setShowPw((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-ivory/50 cursor-pointer">
+          <button type="button" onClick={() => setShowPw((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-600 cursor-pointer">
             {showPw ? "Hide" : "Show"}
           </button>
         </div>
       </div>
-      {error && <p className="text-sm text-red-300">{error}</p>}
-      {notice && <p className="text-sm text-ivory/70">{notice}</p>}
-      <button disabled={loading} className="btn btn-light w-full">
+      {error && <p className="text-sm text-red-700">{error}</p>}
+      {notice && <p className="text-sm text-stone-600">{notice}</p>}
+      <button disabled={loading} className="btn btn-dark w-full">
         {loading ? "Signing in…" : "Sign in to admin"}
       </button>
     </form>

@@ -17,13 +17,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="relative hidden overflow-hidden bg-charcoal lg:block">
-        <Image src={img("https://images.unsplash.com/photo-1616486338812-3dadae4b4ace", 1800)} alt="" fill priority sizes="50vw" className="object-cover opacity-80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 to-transparent" />
-        <div className="absolute inset-x-12 bottom-12 text-ivory">
-          <p className="eyebrow !text-ivory/70">Atmosfere Living</p>
-          <p className="display mt-4 max-w-md text-4xl">Your orders, wishlist and saved addresses — all in one place.</p>
-        </div>
+      <div className="relative hidden overflow-hidden bg-stone-100 lg:block">
+        <Image src={img("https://images.unsplash.com/photo-1616486338812-3dadae4b4ace", 1800)} alt="" fill priority sizes="50vw" className="object-cover" />
       </div>
 
       <div className="flex flex-col px-[var(--gutter)] py-10">

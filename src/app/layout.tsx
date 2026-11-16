@@ -32,8 +32,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${serif.variable} ${sans.variable} antialiased`}>
+    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
+      <body className="antialiased">
         <CartProvider>{children}</CartProvider>
       </body>
     </html>
