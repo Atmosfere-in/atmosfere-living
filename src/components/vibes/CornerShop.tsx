@@ -201,20 +201,27 @@ export function CornerShop({ corner }: { corner: VibeCorner }) {
 
       {/* Shop bar: sticks to the bottom of the screen until the footer */}
       <div className="sticky bottom-0 z-30 border-t border-stone-200 bg-ivory/95 backdrop-blur-md">
-        <div className="container-lux flex flex-wrap items-center justify-between gap-3 py-3 sm:py-4">
+        <div className="container-lux flex items-center justify-between gap-3 py-3 sm:py-4">
           <div className="min-w-0">
-            <p className="text-[0.6rem] tracking-[0.22em] uppercase text-stone-400">
-              {notice ?? `${chosenItems.length} of ${buyable.length} pieces selected`}
+            <p className="truncate text-[0.6rem] tracking-[0.22em] uppercase text-stone-400">
+              {notice ?? `${chosenItems.length} of ${buyable.length} pieces`}
             </p>
             <p className="font-display text-xl">{inr(total)}</p>
           </div>
-          <div className="flex flex-1 justify-end gap-2 sm:flex-none">
-            <button disabled={!chosenItems.length} onClick={() => addItems(chosenItems)} className="btn btn-outline !min-h-11 !px-4 sm:!px-6">
+          {/* Phone: one button that adapts to the selection */}
+          <button
+            disabled={!chosenItems.length}
+            onClick={() => addItems(chosenItems)}
+            className="btn btn-dark !min-h-11 shrink-0 !px-5 sm:hidden"
+          >
+            {chosenItems.length === buyable.length ? "Add corner" : `Add ${chosenItems.length} piece${chosenItems.length === 1 ? "" : "s"}`}
+          </button>
+          <div className="hidden gap-2 sm:flex">
+            <button disabled={!chosenItems.length} onClick={() => addItems(chosenItems)} className="btn btn-outline !min-h-11 !px-6">
               Add selected
             </button>
-            <button disabled={!buyable.length} onClick={() => addItems(buyable)} className="btn btn-dark !min-h-11 !px-4 sm:!px-6">
-              <span className="sm:hidden">Whole corner</span>
-              <span className="hidden sm:inline">Shop the entire corner</span>
+            <button disabled={!buyable.length} onClick={() => addItems(buyable)} className="btn btn-dark !min-h-11 !px-6">
+              Shop the entire corner
             </button>
           </div>
         </div>
