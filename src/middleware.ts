@@ -1,9 +1,22 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isComingSoonHost } from "@/lib/coming-soon";
 
 const PROTECTED = ["/account", "/checkout", "/admin"];
 
 export async function middleware(request: NextRequest) {
+  // Before launch, the public domain shows only the coming soon page, whatever path is asked for.
+  if (isComingSoonHost(request.headers.get("host"))) {
+    const path = request.nextUrl.pathname;
+    if (path === "/robots.txt") return new NextResponse("User-agent: *\nAllow: /\n", { headers: { "content-type": "text/plain" } });
+    if (path.startsWith("/api/") || path.startsWith("/auth/") || path === "/sitemap.xml") return new NextResponse(null, { status: 404 });
+    if (path === "/coming-soon") return NextResponse.next();
+    const url = request.nextUrl.clone();
+    url.pathname = "/coming-soon";
+    url.search = "";
+    return NextResponse.rewrite(url);
+  }
+
   let response = NextResponse.next({ request });
 
   // Allow the storefront to render before Supabase is configured.
