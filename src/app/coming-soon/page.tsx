@@ -1,40 +1,39 @@
 import type { Metadata } from "next";
-import { BrandLockup } from "@/components/Logo";
+import Image from "next/image";
 import { COMING_SOON_BANNER } from "@/lib/coming-soon";
 
 export const metadata: Metadata = {
   title: { absolute: "Atmosfere Living — Coming soon" },
   description: "Curated furniture and decor from Atmosfere. Launching soon.",
+  openGraph: { images: [COMING_SOON_BANNER] },
 };
 
-/** Shown for every page on atmosfere-living.in until launch (see lib/coming-soon.ts). */
+const ALT = "Atmosfere Living — coming soon. A warm living room with a curved sofa, travertine table and wooden shelves.";
+
+/**
+ * Shown for every page on atmosfere-living.in until launch (see lib/coming-soon.ts).
+ * Wide screens show the banner full-bleed. Phones and portrait tablets would crop its lettering,
+ * so they get the same title set in the site's fonts above the room part of the banner.
+ */
 export default function ComingSoon() {
-  const { desktop, mobile, alt } = COMING_SOON_BANNER;
-
-  if (desktop) {
-    return (
-      <main className="relative min-h-svh bg-ivory">
-        <picture>
-          {mobile && <source media="(max-width: 767px)" srcSet={mobile} />}
-          <img src={desktop} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
-        </picture>
-      </main>
-    );
-  }
-
   return (
-    <main className="flex min-h-svh flex-col items-center justify-between bg-ivory px-[var(--gutter)] py-10 text-center text-ink">
-      <BrandLockup />
-      <div className="max-w-2xl">
-        <p className="eyebrow rise">Launching soon</p>
-        <h1 className="display mt-6 text-[clamp(3rem,8vw,6.5rem)] rise-2">Coming soon.</h1>
-        <p className="mx-auto mt-6 max-w-md text-stone-600 font-light leading-relaxed rise-3">
-          Furniture, lighting and objects chosen by the designers behind Atmosfere — for homes that feel quietly considered.
-        </p>
+    <main className="min-h-svh bg-[#efe3d2] text-[#433a26]">
+      {/* Wide, landscape screens: the banner as designed */}
+      <div className="relative hidden h-svh md:landscape:block">
+        <Image src={COMING_SOON_BANNER} alt={ALT} fill priority sizes="100vw" className="object-cover object-left" />
       </div>
-      <a href="https://www.atmosfere.in" className="text-xs tracking-[0.2em] uppercase text-stone-600 hover:text-ink">
-        Visit atmosfere.in
-      </a>
+
+      {/* Phones and portrait screens: title above, the room below */}
+      <div className="flex min-h-svh flex-col md:landscape:hidden">
+        <div className="flex flex-col items-center justify-center bg-gradient-to-b from-[#f1e6d7] to-[#e8d6bf] px-6 pb-12 pt-16 text-center">
+          <h1 className="font-display text-[clamp(3rem,15vw,5.5rem)] leading-none tracking-[0.18em] pl-[0.18em] rise">LIVING</h1>
+          <span className="mt-7 h-px w-24 bg-[#433a26]/50 rise-2" />
+          <p className="mt-6 text-[0.72rem] font-medium tracking-[0.45em] pl-[0.45em] uppercase rise-2">Coming soon</p>
+        </div>
+        <div className="relative min-h-[50svh] flex-1">
+          <Image src={COMING_SOON_BANNER} alt={ALT} fill priority sizes="(max-width: 767px) 200vw, 120vw" className="object-cover object-[70%_50%]" />
+        </div>
+      </div>
     </main>
   );
 }

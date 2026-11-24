@@ -12,13 +12,5 @@ export const COMING_SOON_HOSTS = ["atmosfere-living.in", "www.atmosfere-living.i
 export const isComingSoonHost = (host: string | null | undefined) =>
   process.env.COMING_SOON !== "off" && COMING_SOON_HOSTS.includes((host ?? "").split(":")[0].toLowerCase());
 
-/**
- * Banner images for the coming soon page, in /public/coming-soon/.
- * `mobile` is an optional tall version for phones; without it the desktop banner is used everywhere.
- * Leave `desktop` empty to show the text-only version.
- */
-export const COMING_SOON_BANNER = {
-  desktop: "",
-  mobile: "",
-  alt: "Atmosfere Living — coming soon",
-};
+/** The coming soon banner (16:9, "LIVING / COMING SOON" on the left), in /public/coming-soon/. */
+export const COMING_SOON_BANNER = "/coming-soon/living-banner.webp";
