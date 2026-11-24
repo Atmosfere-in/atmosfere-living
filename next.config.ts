@@ -6,6 +6,9 @@ const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const nextConfig: NextConfig = {
   images: {
+    // Locally, let the browser load images directly: the dev server is slow and a single slow
+    // image download could take it down. Production still optimises every image.
+    unoptimized: process.env.NODE_ENV === "development",
     // One high quality setting for every image (Next picks the closest allowed value).
     qualities: [90],
     formats: ["image/avif", "image/webp"],
