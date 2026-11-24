@@ -31,7 +31,7 @@ export default function ComingSoon() {
           <p className="mt-6 text-[0.72rem] font-medium tracking-[0.45em] pl-[0.45em] uppercase rise-2">Coming soon</p>
         </div>
         <div className="relative min-h-[50svh] flex-1">
-          <Image src={COMING_SOON_BANNER} alt={ALT} fill priority sizes="(max-width: 767px) 200vw, 120vw" className="object-cover object-[70%_50%]" />
+          <Image src={COMING_SOON_BANNER} alt={ALT} fill priority sizes="(max-width: 767px) 280vw, 180vw" className="object-cover object-[70%_50%]" />
         </div>
       </div>
     </main>
