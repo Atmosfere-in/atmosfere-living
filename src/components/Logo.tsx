@@ -23,8 +23,12 @@ export function BrandLockup({ className }: { className?: string }) {
   return (
     <span className={cx("inline-flex items-center gap-2.5 sm:gap-4", className)}>
       <Logo className="h-[17px] sm:h-[22px]" />
-      <span className="h-4 w-px bg-current opacity-30" />
-      <span className="text-[0.6rem] font-medium tracking-[0.24em] uppercase sm:text-[0.65rem] sm:tracking-[0.32em]">Living</span>
+      {/* The wordmark's letters sit in the lower part of the logo (the arch rises above them), so the
+          divider and "LIVING" are centred on the letters' x-height, not on the whole logo. */}
+      <span className="h-[8.5px] w-px translate-y-[4px] bg-current opacity-30 sm:h-[11px] sm:translate-y-[5px]" />
+      <span className="translate-y-[4.25px] text-[0.6rem] font-medium tracking-[0.24em] uppercase sm:translate-y-[5.5px] sm:text-[0.65rem] sm:tracking-[0.32em]">
+        Living
+      </span>
     </span>
   );
 }
