@@ -49,9 +49,6 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
 
   return (
     <>
-      <div className="bg-stone-100 text-stone-600 text-center text-[0.68rem] tracking-[0.22em] uppercase py-2.5 px-4">
-        Complimentary shipping on orders above ₹5,000 · Use <span className="text-ink">WELCOME10</span> for 10% off
-      </div>
       <header
         className={cx(
           "sticky top-0 z-40 transition-[background-color,color,box-shadow] duration-500",
@@ -129,7 +126,7 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
         )}
 
         {menu && (
-          <nav className="lg:hidden container-lux flex h-[calc(100dvh-var(--header-height)-34px)] flex-col justify-between pb-10 pt-6">
+          <nav className="lg:hidden container-lux flex h-[calc(100dvh-var(--header-height))] flex-col justify-between pb-10 pt-6">
             <ul className="space-y-3">
               {NAV.map((n, i) => (
                 <li key={n.href} className="rise" style={{ animationDelay: `${i * 50}ms` }}>
