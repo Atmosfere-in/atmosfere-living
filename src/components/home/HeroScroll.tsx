@@ -9,8 +9,10 @@ import { ArrowRight } from "lucide-react";
  * Ported from the "Scrollymation" section; timings and layout are unchanged.
  *
  * Loading is progressive so it starts at once: the first frame shows immediately, a coarse pass (every 8th frame)
- * follows so any scroll position has a nearby frame, then the gaps fill in. Phones use lighter 960px frames and
- * every second frame.
+ * follows so any scroll position has a nearby frame, then the gaps fill in. Phones load every second frame.
+ *
+ * Playback is eased: the film glides toward the scroll position instead of jumping frame to frame, and the
+ * canvas is drawn at the screen's full pixel density with high-quality scaling.
  */
 const FRAME_COUNT = 534;
 const SCROLL_LENGTH_VH = 700; // total scroll distance for the whole sequence
@@ -18,9 +20,10 @@ const INTRO_FADE_END = 0.035; // intro copy is gone by this progress
 const MID_BEAT_CENTER = 300 / (FRAME_COUNT - 1); // frame 300 = the moment the camera steps inside
 const MID_BEAT_WIDTH = 0.045;
 const ARRIVAL_START = 0.94; // final beat
-const PARALLEL_LOADS = 6;
+const PARALLEL_LOADS = 8;
+const EASE_MS = 110; // how quickly playback catches up with the scroll (lower = snappier)
 
-const framePath = (n: number, small: boolean) => (small ? `/hero/sm/${String(n).padStart(4, "0")}.webp` : `/hero/lg/${String(n).padStart(4, "0")}.jpg`);
+const framePath = (n: number) => `/hero/lg/${String(n).padStart(4, "0")}.jpg`;
 
 function ramp(x: number, a: number, b: number) {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -61,7 +64,10 @@ export function HeroScroll() {
     let drawn = -1;
     let dest = { dx: 0, dy: 0, dw: 0, dh: 0 };
     let disposed = false;
-    let ticking = false;
+    let target = 0; // scroll progress 0–1
+    let shown = 0; // eased progress actually on screen
+    let raf = 0;
+    let last = 0;
     let loaded = 0;
 
     const nearestLoaded = (i: number) => {
@@ -90,14 +96,14 @@ export function HeroScroll() {
     }
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = stage.clientWidth;
       const h = stage.clientHeight;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "medium";
+      ctx.imageSmoothingQuality = "high";
       computeRect();
       drawn = -1;
       draw(wanted);
@@ -119,20 +125,39 @@ export function HeroScroll() {
       }
     }
 
-    function update() {
-      ticking = false;
+    const readScroll = () => {
       const rect = section.getBoundingClientRect();
       const total = rect.height - stage.clientHeight;
-      const progress = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+      target = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+    };
+
+    function render(progress: number) {
       wanted = Math.min(frames.length - 1, Math.round(progress * (frames.length - 1)));
       draw(wanted);
       syncText(progress);
     }
 
+    /** One animation step: glide the shown position toward the scroll position. */
+    function tick(now: number) {
+      const dt = last ? Math.min(64, now - last) : 16;
+      last = now;
+      shown += (target - shown) * (1 - Math.exp(-dt / EASE_MS));
+      if (Math.abs(target - shown) < 0.0004) shown = target;
+      render(shown);
+      raf = shown === target ? 0 : requestAnimationFrame(tick);
+      if (!raf) last = 0;
+    }
+
+    function update() {
+      readScroll();
+      if (reduceMotion) {
+        shown = target;
+        render(shown);
+      } else if (!raf) raf = requestAnimationFrame(tick);
+    }
+
     function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(update);
+      update();
     }
 
     // ---- Progressive loading: first frame, then every 8th, then the rest, a few at a time ----
@@ -148,7 +173,7 @@ export function HeroScroll() {
       const i = order[next++];
       const img = new Image();
       img.decoding = "async";
-      img.src = framePath(frames[i], small);
+      img.src = framePath(frames[i]);
       return img
         .decode()
         .catch(() => new Promise<void>((res) => {
@@ -160,8 +185,10 @@ export function HeroScroll() {
           if (img.naturalWidth) images[i] = img;
           loaded++;
           if (i === 0) {
+            readScroll();
+            shown = target; // start where the page already is
             resize();
-            update();
+            render(shown);
             setReady(true);
           } else if (Math.abs(i - wanted) < Math.abs(drawn - wanted)) {
             draw(wanted); // a closer frame just arrived
@@ -176,6 +203,7 @@ export function HeroScroll() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       disposed = true;
+      cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
       window.removeEventListener("scroll", onScroll);
     };
