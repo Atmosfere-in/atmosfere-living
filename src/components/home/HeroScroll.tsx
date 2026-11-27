@@ -214,7 +214,7 @@ export function HeroScroll() {
       <section
         ref={stageRef}
         aria-label="A walk through a home styled by Atmosfere"
-        className="sticky top-[var(--header-height)] h-[calc(100svh-var(--header-height))] w-full overflow-hidden bg-[#0a0a08]"
+        className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[#0a0a08]"
       >
         {/* Preloader — only until the first frame is in */}
         <div

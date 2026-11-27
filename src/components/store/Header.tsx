@@ -25,18 +25,40 @@ export function Header({ user }: { user: { name: string | null; isAdmin: boolean
   const [menu, setMenu] = useState(false);
   const [search, setSearch] = useState(false);
   const [q, setQ] = useState("");
+  const [overHero, setOverHero] = useState(pathname === "/");
 
   useEffect(() => {
     setMenu(false);
     setSearch(false);
   }, [pathname]);
 
+  // On the homepage the header floats transparent over the hero film, and turns solid once the film has scrolled past.
+  useEffect(() => {
+    const hero = pathname === "/" ? document.querySelector(".hero-scroll") : null;
+    if (!hero) return setOverHero(false);
+    const check = () => setOverHero(hero.getBoundingClientRect().bottom > 80);
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+  }, [pathname]);
+  const transparent = overHero && !menu && !search;
+
   return (
     <>
       <div className="bg-stone-100 text-stone-600 text-center text-[0.68rem] tracking-[0.22em] uppercase py-2.5 px-4">
         Complimentary shipping on orders above ₹5,000 · Use <span className="text-ink">WELCOME10</span> for 10% off
       </div>
-      <header className="sticky top-0 z-40 bg-ivory/95 text-ink backdrop-blur-md shadow-[0_1px_0_var(--color-stone-200)]">
+      <header
+        className={cx(
+          "sticky top-0 z-40 transition-[background-color,color,box-shadow] duration-500",
+          transparent ? "bg-transparent text-ivory" : "bg-ivory/95 text-ink backdrop-blur-md shadow-[0_1px_0_var(--color-stone-200)]",
+          pathname === "/" && "-mb-[var(--header-height)]",
+        )}
+      >
         <div className="container-lux flex h-[var(--header-height)] items-center justify-between gap-3 sm:gap-6">
           <Link href="/" aria-label="Atmosfere Living home" className="min-w-0 shrink-0">
             <BrandLockup />

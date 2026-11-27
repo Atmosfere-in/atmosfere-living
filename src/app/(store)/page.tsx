@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getCategories, getCorners, getProducts, getRatings } from "@/lib/data";
-import { VibeTiles } from "@/components/vibes/VibeTiles";
+import { VibePanels } from "@/components/home/VibePanels";
 import { ProductCard } from "@/components/store/ProductCard";
 import { HeroScroll } from "@/components/home/HeroScroll";
 import { img } from "@/lib/utils";
@@ -26,23 +26,21 @@ export default async function Home() {
 
       {/* Shop by Vibe */}
       {corners.length > 0 && (
-        <section className="border-y border-stone-200 bg-stone-100/60">
-          <div className="container-lux py-24 md:py-32">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <div>
-                <p className="eyebrow">Shop by Vibe</p>
-                <h2 className="display mt-4 max-w-2xl text-[clamp(2rem,4vw,3.25rem)]">One piece, styled your way.</h2>
-                <p className="mt-4 max-w-lg text-stone-600 font-light">
-                  Corners designed by our studio. Shop the complete look, or just the pieces you love.
-                </p>
-              </div>
-              <Link href="/vibes" className="link-underline">
+        <section className="container-lux py-24 md:py-32">
+          <div className="grid items-end gap-6 md:grid-cols-12">
+            <div className="md:col-span-7">
+              <p className="eyebrow">Shop by Vibe</p>
+              <h2 className="display mt-4 text-[clamp(2.25rem,4.5vw,4rem)]">One piece, styled four ways.</h2>
+            </div>
+            <div className="md:col-span-5 md:pb-2">
+              <p className="text-stone-600 font-light">Corners designed by our studio. Open a mood, then shop the complete look or just the pieces you love.</p>
+              <Link href="/vibes" className="link-underline mt-5">
                 All vibes <ArrowRight size={14} />
               </Link>
             </div>
-            <div className="mt-14">
-              <VibeTiles corners={corners} />
-            </div>
+          </div>
+          <div className="mt-14">
+            <VibePanels corners={corners} />
           </div>
         </section>
       )}
