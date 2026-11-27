@@ -7,7 +7,7 @@ import { ProductCard } from "@/components/store/ProductCard";
 import { HeroScroll } from "@/components/home/HeroScroll";
 import { img } from "@/lib/utils";
 
-const STORY = "https://images.unsplash.com/photo-1578500494198-246f612d3b3d";
+const STORY = "https://images.unsplash.com/photo-1774477178005-bff823e43be8";
 const EDIT = "https://images.unsplash.com/photo-1618220179428-22790b461013";
 const SPACES = "https://images.unsplash.com/photo-1564078516393-cf04bd966897";
 
@@ -72,7 +72,7 @@ export default async function Home() {
       {/* Story */}
       <section className="container-lux grid items-center gap-12 pb-24 md:grid-cols-2 md:gap-20 md:pb-32">
         <div className="relative aspect-[5/4] overflow-hidden rounded-[18px] shadow-[0_30px_60px_-30px_rgba(31,29,26,0.35)]">
-          <Image src={img(STORY, 1600)} alt="A styled sofa with dried pampas grass" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
+          <Image src={img(STORY, 1600)} alt="A softly lit corner with a lounge chair and arc lamp" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
         </div>
         <div className="max-w-lg">
           <p className="eyebrow">The Living edit</p>

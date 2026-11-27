@@ -15,13 +15,19 @@ export default async function VibesPage() {
 
   return (
     <>
-      <section className="container-lux pb-12 pt-14 md:pb-20 md:pt-20">
-        <p className="eyebrow">Shop by Vibe</p>
-        <h1 className="display mt-5 max-w-4xl text-[clamp(2.75rem,6vw,5.5rem)]">One piece, styled your way.</h1>
-        <p className="mt-6 max-w-xl text-stone-600 font-light leading-relaxed">
-          Each corner is designed by the Atmosfere studio around our pieces. Find the mood that feels like home, then shop the complete corner or just
-          the pieces you love.
-        </p>
+      <section className="relative mb-12 overflow-hidden md:mb-20">
+        <Image src="/coming-soon/living-banner.webp" alt="" fill priority sizes="100vw" className="object-cover object-[75%_50%]" />
+        {/* Warm ivory wash on the left keeps the title crisp; the room shows through on the right */}
+        <span className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/85 to-ivory/10 md:via-ivory/70 md:to-transparent" />
+        <span className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ivory to-transparent" />
+        <div className="container-lux relative pb-20 pt-16 md:pb-32 md:pt-28">
+          <p className="eyebrow">Shop by Vibe</p>
+          <h1 className="display mt-5 max-w-3xl text-[clamp(2.75rem,6vw,5.5rem)]">One piece, styled your way.</h1>
+          <p className="mt-6 max-w-xl text-stone-600 font-light leading-relaxed">
+            Each corner is designed by the Atmosfere studio around our pieces. Find the mood that feels like home, then shop the complete corner or just
+            the pieces you love.
+          </p>
+        </div>
       </section>
 
       {corners.length === 0 ? (
