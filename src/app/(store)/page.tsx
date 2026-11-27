@@ -4,9 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { getCategories, getCorners, getProducts, getRatings } from "@/lib/data";
 import { VibeTiles } from "@/components/vibes/VibeTiles";
 import { ProductCard } from "@/components/store/ProductCard";
+import { HeroScroll } from "@/components/home/HeroScroll";
 import { img } from "@/lib/utils";
 
-const HERO = "https://images.unsplash.com/photo-1774477178005-bff823e43be8";
 const STORY = "https://images.unsplash.com/photo-1578500494198-246f612d3b3d";
 const EDIT = "https://images.unsplash.com/photo-1618220179428-22790b461013";
 const SPACES = "https://images.unsplash.com/photo-1564078516393-cf04bd966897";
@@ -21,31 +21,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="container-lux grid items-center gap-10 pb-20 pt-10 md:grid-cols-12 md:gap-16 md:pb-28 md:pt-16">
-        <div className="md:col-span-5">
-          <p className="eyebrow rise">Style &amp; Shop</p>
-          <h1 className="display mt-5 text-[clamp(2.75rem,5.5vw,5.25rem)] rise-2">
-            Living, styled
-            <br />
-            corner by corner.
-          </h1>
-          <p className="mt-6 max-w-md text-stone-600 font-light rise-3">
-            Furniture, lighting and objects chosen by the designers behind Atmosfere Spaces — for homes that feel quietly considered.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-4 rise-3">
-            <Link href="/shop" className="btn btn-dark">
-              Shop the collection <ArrowRight size={14} />
-            </Link>
-            <Link href="/shop?category=furniture" className="btn btn-outline">
-              Shop furniture
-            </Link>
-          </div>
-        </div>
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-stone-100 md:col-span-7 md:aspect-[5/4]">
-          <Image src={img(HERO, 2000)} alt="A softly lit living corner with a lounge chair and arc lamp" fill priority sizes="(min-width:768px) 58vw, 100vw" className="object-cover" />
-        </div>
-      </section>
+      {/* Hero: scroll-scrubbed walk through a home */}
+      <HeroScroll />
 
       {/* Shop by Vibe */}
       {corners.length > 0 && (
