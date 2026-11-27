@@ -26,7 +26,7 @@ export default async function Home() {
 
       {/* Shop by Vibe */}
       {corners.length > 0 && (
-        <section className="container-lux py-24 md:py-32">
+        <section className="container-lux pb-12 pt-24 md:pb-16 md:pt-32">
           <div className="grid items-end gap-6 md:grid-cols-12">
             <div className="md:col-span-7">
               <p className="eyebrow">Shop by Vibe</p>
@@ -46,7 +46,7 @@ export default async function Home() {
       )}
 
       {/* Categories */}
-      <section className="container-lux py-24 md:py-32">
+      <section className="container-lux pb-24 pt-12 md:pb-32 md:pt-16">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <p className="eyebrow">Shop by category</p>
