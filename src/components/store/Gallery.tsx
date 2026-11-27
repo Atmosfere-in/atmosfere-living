@@ -6,23 +6,18 @@ import { cx, img } from "@/lib/utils";
 
 /**
  * Product photos.
- * Desktop: one large frame with thumbnails; the whole gallery stays in view while the details scroll beside it.
+ * Desktop: an image grid sized to the screen — one large photo on top, the rest in a row below.
+ * Clicking a small photo swaps it into the large slot. The grid stays in view while the details scroll.
  * Phones: a swipeable row with dots.
- * Every photo is shown whole (never cropped) over a soft blurred copy of itself, so wide and tall shots sit in the same frame.
  */
 export function Gallery({ images, name }: { images: string[]; name: string }) {
   const photos = images.filter((s) => !/drawing/i.test(s)); // technical drawings are not shown in the store
   const list = photos.length ? photos : [""];
+  const [main, setMain] = useState(0);
   const [at, setAt] = useState(0);
   const rowRef = useRef<HTMLDivElement>(null);
   const alt = (i: number) => (i === 0 ? name : `${name} — view ${i + 1}`);
-
-  const frame = (src: string, i: number, sizes: string) => (
-    <>
-      <Image src={img(src, 400)} alt="" aria-hidden fill sizes="20vw" className="scale-125 object-cover opacity-60 blur-2xl" />
-      <Image src={img(src, 1800)} alt={alt(i)} fill priority={i === 0} sizes={sizes} className="object-contain" />
-    </>
-  );
+  const rest = list.map((_, i) => i).filter((i) => i !== main).slice(0, 4);
 
   return (
     <>
@@ -35,8 +30,8 @@ export function Gallery({ images, name }: { images: string[]; name: string }) {
         >
           {list.map((src, i) => (
             <div key={src + i} className="w-full shrink-0 snap-center px-[var(--gutter)]">
-              <div className="relative aspect-square overflow-hidden rounded-[18px] bg-stone-100 sm:aspect-[4/3]">
-                {frame(src, i, "100vw")}
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-stone-100">
+                <Image src={img(src, 1400)} alt={alt(i)} fill priority={i === 0} sizes="100vw" className="object-cover" />
               </div>
             </div>
           ))}
@@ -55,29 +50,42 @@ export function Gallery({ images, name }: { images: string[]; name: string }) {
         )}
       </div>
 
-      {/* Desktop: one frame sized to the screen, thumbnails below */}
-      <div className="hidden lg:block">
-        <div className="relative h-[min(calc(100svh-var(--header-height)-10.5rem),820px)] min-h-[420px] overflow-hidden rounded-[18px] bg-stone-100">
+      {/* Desktop: image grid that fits the screen */}
+      <div
+        className={cx(
+          "hidden h-[min(calc(100svh-var(--header-height)-4.5rem),900px)] min-h-[480px] gap-3 lg:grid",
+          rest.length ? "grid-rows-[minmax(0,2.1fr)_minmax(0,1fr)]" : "grid-rows-1",
+        )}
+      >
+        <div className="relative overflow-hidden rounded-[18px] bg-stone-100">
           {list.map((src, i) => (
-            <div key={src + i} className={cx("absolute inset-0 transition-opacity duration-700", i === at ? "opacity-100" : "pointer-events-none opacity-0")}>
-              {frame(src, i, "(min-width:1024px) 58vw, 100vw")}
-            </div>
+            <Image
+              key={src + i}
+              src={img(src, 1800)}
+              alt={alt(i)}
+              fill
+              priority={i === 0}
+              sizes="(min-width:1024px) 58vw, 100vw"
+              className={cx("object-cover transition-opacity duration-700", i === main ? "opacity-100" : "opacity-0")}
+            />
           ))}
         </div>
-        {list.length > 1 && (
-          <div className="mt-4 flex gap-3">
-            {list.map((src, i) => (
+        {rest.length > 0 && (
+          <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${rest.length}, minmax(0, 1fr))` }}>
+            {rest.map((i) => (
               <button
-                key={src + i}
-                onClick={() => setAt(i)}
-                onMouseEnter={() => setAt(i)}
-                aria-label={`View image ${i + 1}`}
-                className={cx(
-                  "relative h-20 w-24 overflow-hidden rounded-lg bg-stone-100 transition-opacity cursor-pointer xl:h-24 xl:w-28",
-                  i === at ? "ring-1 ring-ink ring-offset-2 ring-offset-ivory" : "opacity-60 hover:opacity-100",
-                )}
+                key={list[i] + i}
+                onClick={() => setMain(i)}
+                aria-label={`View image ${i + 1} large`}
+                className="group relative overflow-hidden rounded-[14px] bg-stone-100 cursor-pointer"
               >
-                <Image src={img(src, 300)} alt="" fill sizes="112px" className="object-cover" />
+                <Image
+                  src={img(list[i], 900)}
+                  alt={alt(i)}
+                  fill
+                  sizes="(min-width:1024px) 20vw, 33vw"
+                  className="object-cover transition-transform duration-[1200ms] ease-lux group-hover:scale-105"
+                />
               </button>
             ))}
           </div>
