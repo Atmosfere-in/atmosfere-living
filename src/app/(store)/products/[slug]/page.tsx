@@ -74,11 +74,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
 
       <section className="container-lux grid grid-cols-1 gap-10 pb-24 pt-8 lg:grid-cols-12 lg:gap-16">
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-7 lg:sticky lg:top-[calc(var(--header-height)+24px)] lg:self-start">
           <Gallery images={product.images} name={product.name} />
         </div>
 
-        <div className="lg:col-span-5 lg:sticky lg:top-[calc(var(--header-height)+24px)] lg:self-start">
+        <div className="lg:col-span-5">
           {product.category && <p className="eyebrow">{product.category.name}</p>}
           <h1 className="display mt-4 text-[clamp(2.25rem,3.6vw,3.25rem)]">{product.name}</h1>
           {reviews.length > 0 && (
