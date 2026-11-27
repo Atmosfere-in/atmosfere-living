@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getCategories, getCorners, getProducts, getRatings } from "@/lib/data";
-import { VibePanels } from "@/components/home/VibePanels";
+import { VibeGrid } from "@/components/home/VibeGrid";
 import { ProductCard } from "@/components/store/ProductCard";
 import { HeroScroll } from "@/components/home/HeroScroll";
 import { img } from "@/lib/utils";
@@ -33,14 +33,14 @@ export default async function Home() {
               <h2 className="display mt-4 text-[clamp(2.25rem,4.5vw,4rem)]">One piece, styled four ways.</h2>
             </div>
             <div className="md:col-span-5 md:pb-2">
-              <p className="text-stone-600 font-light">Corners designed by our studio. Open a mood, then shop the complete look or just the pieces you love.</p>
+              <p className="text-stone-600 font-light">Corners designed by our studio. Hover a mood to see it, then shop the complete look or just the pieces you love.</p>
               <Link href="/vibes" className="link-underline mt-5">
                 All vibes <ArrowRight size={14} />
               </Link>
             </div>
           </div>
           <div className="mt-14">
-            <VibePanels corners={corners} />
+            <VibeGrid corners={corners} />
           </div>
         </section>
       )}
